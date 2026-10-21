@@ -1,0 +1,1507 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Démo · Site et prise de RDV pour cabinet de kinésithérapie</title>
+<meta name="description" content="Réservation en ligne 24h/24, rappels WhatsApp, suivi des cures et de la douleur, agenda et dossiers patients. En français et en arabe. Démo réalisée par Oussama Sboui, ingénieur logiciel.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#06201E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='7' fill='%230B7C6E'/%3E%3Cpath d='M3 12h4l2-5 4 10 2-5h6' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:url" content="https://oussmasboui.github.io/demo-kine/">
+<meta property="og:title" content="Démo · Site et prise de RDV pour cabinet de kinésithérapie">
+<meta property="og:description" content="Réservation en ligne 24h/24, rappels WhatsApp, suivi des cures et de la douleur, agenda et dossiers patients. En français et en arabe. Démo réalisée par Oussama Sboui, ingénieur logiciel.">
+<meta property="og:image" content="https://oussmasboui.github.io/demo-kine/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+img { max-width: 100%; }
+</style>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Readex+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: glass top bar · dark teal hero with a self-playing phone booking · floating feature band · pain map · back office = deep-green sidebar + working canvas */
+:root {
+  --bg: #F2F6F5; --surface: #FFFFFF; --sunk: #E8F0EE; --ink: #0D1F1E; --muted: #56706C; --line: #D9E5E2;
+  --brand: #0B7C6E; --brand-ink: #FFFFFF; --brand-soft: #DCF2ED;
+  --coral: #E05A35; --coral-soft: #FDE6DD;
+  --aqua: #3B6FD8; --aqua-soft: #E3EBFB;
+  --ok: #0E8A68; --ok-soft: #DCF3EA; --warn: #A3650C; --warn-soft: #FCEFD8; --bad: #CC3B2E; --bad-soft: #FCE4E1; --gold: #B07D10; --gold-soft: #F8ECC9;
+  --fig: #CFE0DC; --av-bg: 92%; --av-fg: 30%;
+  --shadow: 0 1px 2px rgb(13 31 30 / .06), 0 10px 30px -14px rgb(13 31 30 / .22);
+  --shadow-lg: 0 30px 60px -28px rgb(13 31 30 / .35);
+  /* the hero, sidebar and footer are dark in both themes */
+  --navy: #06201E; --navy-2: #0B302D; --on-navy: #ECF7F4; --on-navy-muted: #97B6B0; --glass: rgb(255 255 255 / .08); --glass-line: rgb(255 255 255 / .16);
+  --aur-1: #12A58E; --aur-2: #F2884B; --grad-text-a: #7EE8D2; --grad-text-b: #FFC08A; --wa: #25D366;
+  --f-display: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #08110F; --surface: #0F1B19; --sunk: #152522; --ink: #E5F1EE; --muted: #8FAAA5; --line: #1F332F;
+  --brand: #4FD1B9; --brand-ink: #08110F; --brand-soft: #113B34; --coral: #FF8A65; --coral-soft: #3F1F16; --aqua: #8AAEFF; --aqua-soft: #1B2A4D;
+  --ok: #43CFA0; --ok-soft: #10342A; --warn: #E9B04F; --warn-soft: #3A2A10; --bad: #F2846F; --bad-soft: #3E1D19; --gold: #E7BE52; --gold-soft: #3A2F12;
+  --fig: #29403C; --av-bg: 24%; --av-fg: 82%;
+  --shadow: 0 1px 2px rgb(0 0 0 / .4), 0 10px 30px -14px rgb(0 0 0 / .7); --shadow-lg: 0 30px 60px -28px rgb(0 0 0 / .8);
+  --navy: #040D0C; --navy-2: #0A1E1C; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #08110F; --surface: #0F1B19; --sunk: #152522; --ink: #E5F1EE; --muted: #8FAAA5; --line: #1F332F;
+  --brand: #4FD1B9; --brand-ink: #08110F; --brand-soft: #113B34; --coral: #FF8A65; --coral-soft: #3F1F16; --aqua: #8AAEFF; --aqua-soft: #1B2A4D;
+  --ok: #43CFA0; --ok-soft: #10342A; --warn: #E9B04F; --warn-soft: #3A2A10; --bad: #F2846F; --bad-soft: #3E1D19; --gold: #E7BE52; --gold-soft: #3A2F12;
+  --fig: #29403C; --av-bg: 24%; --av-fg: 82%;
+  --shadow: 0 1px 2px rgb(0 0 0 / .4), 0 10px 30px -14px rgb(0 0 0 / .7); --shadow-lg: 0 30px 60px -28px rgb(0 0 0 / .8);
+  --navy: #040D0C; --navy-2: #0A1E1C; color-scheme: dark }
+:lang(ar) { --f-display: "Readex Pro", system-ui, sans-serif; --f-body: "Readex Pro", system-ui, sans-serif; }
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--f-body); -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 6px; }
+.wrap { max-width: 1200px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+h1, h2, h3 { font-family: var(--f-display); margin: 0; text-wrap: balance; line-height: 1.12; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+
+/* ---------- top bar ---------- */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: color-mix(in srgb, var(--surface) 80%, transparent); backdrop-filter: saturate(1.8) blur(16px); -webkit-backdrop-filter: saturate(1.8) blur(16px); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; gap: 14px; height: 62px; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--f-display); font-weight: 800; font-size: 1.02rem; letter-spacing: -.01em; white-space: nowrap; }
+.logo { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, var(--aur-1), var(--aur-2)); box-shadow: 0 6px 16px -6px var(--aur-1); flex: none; }
+.demo-tag { font: 700 .62rem/1 var(--f-body); letter-spacing: .08em; text-transform: uppercase; padding: 4px 7px; border-radius: 5px; background: var(--warn-soft); color: var(--warn); }
+.links { display: flex; gap: 4px; margin-inline-start: 18px; }
+.links a { text-decoration: none; font-weight: 600; font-size: .9rem; color: var(--muted); padding: 7px 11px; border-radius: 8px; white-space: nowrap; }
+.links a:hover { color: var(--ink); background: var(--sunk); }
+@media (max-width: 1200px) { .links { display: none; } }
+.spacer { margin-inline-start: auto; }
+.seg { display: inline-flex; background: var(--sunk); border-radius: 999px; padding: 3px; gap: 2px; flex: none; }
+.seg button { border: 0; background: transparent; padding: 6px 14px; border-radius: 999px; font-weight: 700; font-size: .84rem; color: var(--muted); white-space: nowrap; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgb(0 0 0 / .14); }
+
+/* ---------- buttons ---------- */
+.btn { border: 1px solid var(--line); background: var(--surface); padding: 9px 15px; border-radius: 10px; font-weight: 700; font-size: .9rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; white-space: nowrap; }
+.btn:hover { border-color: color-mix(in srgb, var(--ink) 30%, var(--line)); }
+.btn.primary { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); box-shadow: 0 8px 20px -10px var(--brand); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.ok { color: var(--ok); } .btn.bad { color: var(--bad); }
+.btn.sm { padding: 6px 11px; font-size: .8rem; border-radius: 8px; }
+.btn.lg { padding: 14px 22px; font-size: 1rem; border-radius: 14px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+.btn.glow { border: 0; color: #fff; background: linear-gradient(135deg, var(--aur-1), var(--aur-2)); box-shadow: 0 14px 34px -12px var(--aur-1); }
+.btn.glass { background: var(--glass); border-color: var(--glass-line); color: var(--on-navy); backdrop-filter: blur(10px); }
+.btn.glass:hover { border-color: rgb(255 255 255 / .35); }
+[dir="rtl"] .flip { transform: scaleX(-1); }
+
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: .74rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+.pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.st-confirmed { background: var(--brand-soft); color: var(--brand); }
+.st-pending { background: var(--warn-soft); color: var(--warn); }
+.st-done { background: var(--ok-soft); color: var(--ok); }
+.st-noshow, .st-cancelled { background: var(--bad-soft); color: var(--bad); }
+
+/* ---------- hero ---------- */
+.hero { position: relative; overflow: hidden; isolation: isolate; background: var(--navy); color: var(--on-navy); }
+.hero::before, .hero::after { content: ""; position: absolute; z-index: -1; border-radius: 50%; filter: blur(70px); pointer-events: none; }
+.hero::before { width: 720px; height: 720px; top: -260px; inset-inline-end: -160px; background: radial-gradient(circle, color-mix(in srgb, var(--aur-1) 65%, transparent), transparent 65%); }
+.hero::after { width: 620px; height: 620px; bottom: -320px; inset-inline-start: -180px; background: radial-gradient(circle, color-mix(in srgb, var(--aur-2) 45%, transparent), transparent 65%); }
+.gridbg { position: absolute; inset: 0; z-index: -1; background-image: linear-gradient(rgb(255 255 255 / .045) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / .045) 1px, transparent 1px); background-size: 46px 46px; -webkit-mask-image: radial-gradient(ellipse 70% 70% at 70% 40%, #000 20%, transparent 75%); mask-image: radial-gradient(ellipse 70% 70% at 70% 40%, #000 20%, transparent 75%); }
+.hero .wrap { display: grid; grid-template-columns: 1.08fr .92fr; gap: 32px; padding-block: 76px 110px; align-items: center; }
+.eyebrow { display: inline-flex; align-items: center; gap: 9px; font-size: .82rem; font-weight: 600; background: var(--glass); border: 1px solid var(--glass-line); padding: 6px 14px 6px 10px; border-radius: 999px; margin-bottom: 22px; }
+.eyebrow i { width: 8px; height: 8px; border-radius: 50%; background: var(--wa); box-shadow: 0 0 0 0 var(--wa); }
+.hero h1 { font-size: clamp(2.5rem, 5.6vw, 4.4rem); font-weight: 800; letter-spacing: -.04em; line-height: 1.02; }
+.hero h1 i, .h-sec i { font-family: var(--f-serif); font-weight: 400; font-style: italic; letter-spacing: -.01em; padding-inline-end: .08em; margin-inline-end: -.1em; }
+.hero h1 i { background: linear-gradient(95deg, var(--grad-text-a), var(--grad-text-b)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+:lang(ar) .hero h1, :lang(ar) .h-sec { letter-spacing: 0; line-height: 1.3; }
+:lang(ar) .hero h1 i, :lang(ar) .h-sec i { font-family: var(--f-display); font-style: normal; font-weight: 700; }
+.hero .lead { font-size: 1.14rem; color: var(--on-navy-muted); max-width: 48ch; margin: 22px 0 30px; }
+.cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.trust { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 30px; font-size: .88rem; color: var(--on-navy-muted); }
+.trust span { display: inline-flex; align-items: center; gap: 7px; }
+.trust b { color: var(--on-navy); font-weight: 600; }
+.live { width: 8px; height: 8px; border-radius: 50%; background: var(--wa); flex: none; }
+.live.off { background: #F2846F; }
+
+.stage { position: relative; min-height: 600px; display: grid; place-items: center; }
+.phone { --pw: 268px; width: var(--pw); font-size: calc(var(--pw) / 20); aspect-ratio: 9 / 18.6; border-radius: 3em; padding: .55em; background: linear-gradient(160deg, #1A2E2C, #050E0D); box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / .14), 0 50px 90px -30px rgb(0 0 0 / .75), 0 0 0 1px rgb(0 0 0 / .4); position: relative; transform: rotate(-3deg); }
+[dir="rtl"] .phone { transform: rotate(3deg); }
+.notch { position: absolute; top: 1.05em; left: 50%; translate: -50% 0; width: 5.6em; height: 1.55em; border-radius: 1em; background: #050E0D; z-index: 3; }
+.screen { position: relative; height: 100%; border-radius: 2.5em; overflow: hidden; background: var(--surface); color: var(--ink); padding: 3.3em 1.15em 1em; display: flex; flex-direction: column; gap: .55em; text-align: start; }
+.pm-top { display: flex; align-items: center; gap: .5em; font-size: .9em; font-weight: 700; }
+.pm-top .logo { width: 1.9em; height: 1.9em; border-radius: .6em; box-shadow: none; }
+.pm-h { font: 800 1.45em/1.15 var(--f-display); letter-spacing: -.02em; margin: .25em 0 .1em; }
+.pm-l { font-size: .72em; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-top: .35em; }
+:lang(ar) .pm-l { letter-spacing: 0; }
+.pm-chips, .pm-days, .pm-slots { display: flex; flex-wrap: wrap; gap: .4em; }
+.pm-chip, .pm-day, .pm-slot { border: 1px solid var(--line); border-radius: .7em; font-size: .8em; padding: .45em .7em; font-weight: 600; transition: background .3s, color .3s, border-color .3s, transform .3s; position: relative; }
+.pm-days { flex-wrap: nowrap; }
+.pm-day { flex: 1; display: grid; justify-items: center; padding: .4em 0; line-height: 1.15; }
+.pm-day small { font-size: .78em; color: var(--muted); font-weight: 500; }
+.pm-day b { font-size: 1.2em; }
+.pm-slots { display: grid; grid-template-columns: repeat(3, 1fr); }
+.pm-slot { text-align: center; font-family: var(--f-mono); padding: .45em 0; }
+.pm-slot.off { opacity: .35; text-decoration: line-through; }
+.pm-chip.sel, .pm-day.sel, .pm-slot.sel { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.pm-day.sel small { color: inherit; }
+.pm-btn { position: relative; margin-top: auto; text-align: center; background: var(--brand); color: var(--brand-ink); border-radius: .9em; padding: .85em; font-weight: 700; font-size: .92em; opacity: .55; transition: opacity .3s, transform .2s; }
+.pm-btn.sel { opacity: 1; }
+.tap::after { content: ""; position: absolute; inset: -4px; border-radius: inherit; border: 2px solid var(--brand); animation: tap .9s ease-out both; pointer-events: none; }
+.pm-btn.tap { transform: scale(.96); }
+@keyframes tap { from { opacity: 1; transform: scale(.9); } to { opacity: 0; transform: scale(1.25); } }
+.pm-done { position: absolute; inset: 0; background: var(--surface); display: grid; place-content: center; justify-items: center; gap: .5em; text-align: center; padding: 1.5em; opacity: 0; transform: scale(.96); transition: opacity .35s, transform .35s; pointer-events: none; }
+.phone.done .pm-done { opacity: 1; transform: none; }
+.pm-done b { font: 800 1.35em/1.2 var(--f-display); }
+.pm-done span { font-size: .9em; color: var(--muted); }
+.pm-done small { font-size: .78em; color: var(--ok); background: var(--ok-soft); padding: .35em .8em; border-radius: 999px; font-weight: 600; margin-top: .4em; }
+.check { width: 64px; height: 64px; }
+.check circle { fill: var(--ok); }
+.check path { fill: none; stroke: #fff; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 40; }
+
+.float { position: absolute; z-index: 2; background: rgb(12 44 40 / .55); border: 1px solid var(--glass-line); color: var(--on-navy); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4); border-radius: 18px; padding: 13px 15px; box-shadow: 0 24px 50px -24px rgb(0 0 0 / .7); display: grid; gap: 7px; font-size: .84rem; }
+.float b { font-size: .9rem; }
+.float .r { display: flex; align-items: center; gap: 10px; }
+.float .sub { color: var(--on-navy-muted); font-size: .8rem; }
+.fa { top: 84px; inset-inline-start: -6px; width: 228px; }
+.fb { bottom: 64px; inset-inline-end: -14px; width: 262px; }
+.fc { top: 22px; inset-inline-end: 0; width: 200px; }
+.fc svg.spk { width: 100%; height: 34px; }
+.gi { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; flex: none; background: rgb(255 255 255 / .1); }
+.gi.ok { background: color-mix(in srgb, var(--wa) 25%, transparent); color: #7CF0AE; }
+.gi.wa { background: var(--wa); color: #fff; }
+.gi.coral { background: rgb(242 136 75 / .22); color: #FFB48A; }
+.bubble { background: color-mix(in srgb, var(--wa) 18%, transparent); border: 1px solid color-mix(in srgb, var(--wa) 30%, transparent); border-radius: 14px 14px 14px 4px; padding: 9px 11px; font-size: .8rem; line-height: 1.4; }
+[dir="rtl"] .bubble { border-radius: 14px 14px 4px 14px; }
+
+/* ---------- feature band ---------- */
+.band { position: relative; z-index: 2; margin-top: -54px; }
+.band-card { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow-lg); display: grid; grid-template-columns: repeat(4, 1fr); }
+.feat { display: flex; gap: 14px; align-items: center; padding: 22px; }
+.feat + .feat { border-inline-start: 1px solid var(--line); }
+.feat b { display: block; font-size: .95rem; }
+.feat span { color: var(--muted); font-size: .82rem; }
+.fi { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; flex: none; background: var(--brand-soft); color: var(--brand); }
+.fi.a { background: var(--aqua-soft); color: var(--aqua); }
+.fi.c { background: var(--coral-soft); color: var(--coral); }
+.fi.k { background: var(--ok-soft); color: var(--ok); }
+
+/* ---------- sections ---------- */
+.sec { padding-block: 96px; }
+.sec.alt { background: var(--surface); border-block: 1px solid var(--line); }
+.kicker { display: inline-flex; align-items: center; gap: 10px; font-size: .78rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--brand); margin-bottom: 14px; }
+.kicker::before { content: ""; width: 22px; height: 2px; background: currentColor; border-radius: 2px; }
+:lang(ar) .kicker { letter-spacing: 0; }
+.h-sec { font-size: clamp(1.9rem, 3.6vw, 2.9rem); font-weight: 800; letter-spacing: -.035em; }
+.h-sec i { color: var(--brand); }
+.sec-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 36px; flex-wrap: wrap; }
+.sec-head p { max-width: 44ch; }
+
+.services { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.svc { position: relative; overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 22px; display: grid; gap: 14px; text-align: start; transition: transform .3s cubic-bezier(.2, .7, .2, 1), box-shadow .3s, border-color .3s; }
+.svc::before { content: ""; position: absolute; inset: auto -30% -60% auto; width: 180px; height: 180px; border-radius: 50%; background: radial-gradient(circle, var(--brand-soft), transparent 70%); opacity: 0; transition: opacity .3s; }
+.svc:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--brand) 40%, var(--line)); box-shadow: var(--shadow-lg); }
+.svc:hover::before { opacity: 1; }
+.svc .si { width: 50px; height: 50px; border-radius: 16px; display: grid; place-items: center; background: hsl(var(--h) 70% var(--av-bg)); color: hsl(var(--h) 60% var(--av-fg)); transition: transform .3s; }
+.svc:hover .si { transform: rotate(-6deg) scale(1.06); }
+.svc h3 { font-size: 1.08rem; }
+.svc p { font-size: .84rem; color: var(--muted); }
+.svc .meta { display: flex; justify-content: space-between; align-items: center; font-size: .84rem; color: var(--muted); padding-top: 12px; border-top: 1px dashed var(--line); margin-top: auto; }
+.svc .price { color: var(--ink); font-weight: 700; }
+.svc .go { display: inline-flex; align-items: center; gap: 4px; font-size: .82rem; font-weight: 700; color: var(--brand); }
+
+/* pain map */
+.pain-grid { display: grid; grid-template-columns: .95fr 1.05fr; gap: 56px; align-items: center; }
+.body-card { position: relative; border-radius: 28px; background: radial-gradient(110% 80% at 50% 0%, var(--brand-soft), var(--sunk)); border: 1px solid var(--line); padding: 26px 20px 18px; display: grid; justify-items: center; gap: 14px; }
+.body-card svg.body { width: min(250px, 70%); height: auto; overflow: visible; }
+.fig { fill: var(--fig); }
+.limb { fill: none; stroke: var(--fig); stroke-linecap: round; stroke-linejoin: round; stroke-width: 17; }
+.limb.leg { stroke-width: 24; }
+.zone { cursor: pointer; outline: none; }
+.zone .halo { fill: var(--brand); opacity: .16; transition: opacity .2s; }
+.zone .dot { fill: var(--brand); stroke: var(--surface); stroke-width: 2.5; transition: fill .2s; }
+.zone:hover .halo, .zone:focus-visible .halo { opacity: .35; }
+.zone.on .dot { fill: var(--coral); }
+.zone.on .halo { fill: var(--coral); opacity: .3; }
+.hl { fill: var(--coral); }
+.hl-halo { fill: var(--coral); opacity: .25; }
+.zone-chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.zone-chips .chip { font-size: .78rem; padding: 6px 10px; }
+.pain-info { display: grid; gap: 18px; }
+.zcard { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 22px; display: grid; gap: 14px; box-shadow: var(--shadow); }
+.zhead { display: flex; align-items: center; gap: 12px; }
+.zhead .fi { background: var(--coral-soft); color: var(--coral); }
+.zhead b { font: 800 1.25rem/1.2 var(--f-display); }
+.reco { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.reco div { background: var(--sunk); border-radius: 14px; padding: 12px 14px; }
+.reco small { display: block; font-size: .74rem; font-weight: 700; color: var(--muted); }
+.reco b { font-size: .98rem; }
+.eva-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.eva-val { font: 800 2rem/1 var(--f-display); }
+.eva-lbl { font-weight: 700; }
+input.eva { -webkit-appearance: none; appearance: none; width: 100%; height: 12px; border-radius: 999px; background: linear-gradient(90deg, #2BB673, #F2C94C 45%, #F2994A 70%, #EB5757); outline: none; margin: 6px 0 2px; }
+input.eva::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 3px solid var(--ink); box-shadow: 0 4px 12px rgb(0 0 0 / .25); cursor: pointer; }
+input.eva::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: #fff; border: 3px solid var(--ink); cursor: pointer; }
+.eva-scale { display: flex; justify-content: space-between; font: 600 .72rem var(--f-mono); color: var(--muted); }
+.alert { display: flex; gap: 10px; align-items: start; background: var(--warn-soft); color: var(--warn); border-radius: 14px; padding: 12px 14px; font-size: .86rem; font-weight: 600; }
+
+/* cabinet */
+.cab-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 20px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 26px; min-width: 0; }
+.dr { display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: start; }
+.dr-photo { width: 120px; height: 140px; border-radius: 22px; background: linear-gradient(150deg, var(--aur-1), var(--aur-2)); display: grid; place-items: center; color: #fff; position: relative; overflow: hidden; }
+.dr-photo::after { content: ""; position: absolute; inset: auto -20% -40% -20%; height: 70%; border-radius: 50% 50% 0 0; background: rgb(255 255 255 / .18); }
+.dr-photo svg { position: relative; z-index: 1; }
+.dr h3 { font-size: 1.35rem; }
+.perks { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; grid-column: 1 / -1; }
+.perk { display: inline-flex; align-items: center; gap: 7px; font-size: .84rem; font-weight: 600; padding: 8px 12px; border-radius: 12px; background: var(--sunk); }
+.perk svg { color: var(--brand); }
+.side-stack { display: grid; gap: 20px; }
+.status { display: inline-flex; align-items: center; gap: 8px; font-size: .84rem; font-weight: 700; padding: 5px 12px; border-radius: 999px; background: var(--ok-soft); color: var(--ok); }
+.status.off { background: var(--bad-soft); color: var(--bad); }
+.status i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.hours { width: 100%; border-collapse: collapse; font-size: .9rem; margin-top: 14px; }
+.hours td { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.hours tr:last-child td { border-bottom: 0; }
+.hours td:last-child { text-align: end; }
+.hours tr.today td { font-weight: 700; color: var(--brand); }
+.map { position: relative; height: 190px; border-radius: 16px; overflow: hidden; background: var(--sunk); margin-top: 14px; }
+.map svg { width: 100%; height: 100%; display: block; }
+.map .road { stroke: var(--surface); }
+.map .avenue { stroke: var(--surface); stroke-width: 16; }
+.map .park { fill: var(--brand-soft); }
+.map .block { fill: color-mix(in srgb, var(--line) 60%, var(--sunk)); }
+.map text { font: 700 11px var(--f-body); fill: var(--muted); }
+.pin { position: absolute; left: 56%; top: 38%; translate: -50% -100%; color: var(--coral); filter: drop-shadow(0 6px 8px rgb(0 0 0 / .25)); }
+
+/* booking */
+.book { display: grid; grid-template-columns: 1.45fr .85fr; background: var(--surface); border: 1px solid var(--line); border-radius: 26px; overflow: hidden; box-shadow: var(--shadow-lg); }
+.book-main { padding: 30px; min-width: 0; }
+.steps { display: grid; gap: 4px; }
+.step { display: grid; grid-template-columns: 34px 1fr; gap: 14px; padding-block: 16px; border-top: 1px solid var(--line); }
+.step:first-child { border-top: 0; }
+.num { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: .82rem; background: var(--sunk); color: var(--muted); transition: background .3s, color .3s; }
+.step.ok .num { background: var(--ok); color: #fff; }
+.step.cur .num { background: var(--brand); color: var(--brand-ink); }
+.step-b { display: grid; gap: 10px; min-width: 0; }
+.step-t { font-weight: 700; font-size: .95rem; padding-top: 4px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 11px; padding: 8px 13px; font-size: .86rem; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; }
+.chip:hover { border-color: var(--brand); }
+.chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.days { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 6px; scrollbar-width: thin; }
+.day { flex: none; width: 62px; border: 1px solid var(--line); background: var(--surface); border-radius: 14px; padding: 9px 4px; text-align: center; line-height: 1.15; display: grid; gap: 2px; }
+.day .d { font: 800 1.3rem/1.1 var(--f-display); }
+.day small { font-size: .7rem; color: var(--muted); font-weight: 600; text-transform: capitalize; }
+.day:hover { border-color: var(--brand); }
+.day[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); box-shadow: 0 10px 20px -10px var(--brand); }
+.day[aria-pressed="true"] small { color: inherit; opacity: .85; }
+.slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 8px; }
+.slots .chip { justify-content: center; font-family: var(--f-mono); }
+.fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+label.f { display: grid; gap: 5px; font-size: .8rem; font-weight: 700; color: var(--muted); }
+.in { border: 1px solid var(--line); background: var(--surface); border-radius: 11px; padding: 11px 13px; font-size: .95rem; width: 100%; min-width: 0; transition: border-color .2s, box-shadow .2s; }
+.in:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-soft); }
+textarea.in { resize: vertical; min-height: 90px; }
+.err { color: var(--bad); font-size: .85rem; font-weight: 600; }
+.book-side { position: relative; overflow: hidden; isolation: isolate; background: var(--navy); color: var(--on-navy); padding: 30px; display: flex; flex-direction: column; gap: 18px; }
+.book-side::before { content: ""; position: absolute; z-index: -1; width: 380px; height: 380px; border-radius: 50%; top: -160px; inset-inline-end: -140px; background: radial-gradient(circle, color-mix(in srgb, var(--aur-1) 60%, transparent), transparent 65%); filter: blur(30px); }
+.sum-row { display: flex; justify-content: space-between; gap: 12px; padding-block: 12px; border-bottom: 1px solid var(--glass-line); font-size: .9rem; }
+.sum-row span:first-child { color: var(--on-navy-muted); }
+.sum-row b { text-align: end; }
+.sum-row b.empty { color: var(--on-navy-muted); font-weight: 500; }
+.sum-total { display: flex; justify-content: space-between; align-items: baseline; margin-top: auto; padding-top: 6px; }
+.sum-total b { font: 800 1.9rem/1 var(--f-display); }
+.sum-note { font-size: .8rem; color: var(--on-navy-muted); display: flex; gap: 8px; align-items: start; }
+.success { display: grid; justify-items: center; text-align: center; gap: 10px; padding: 30px 10px; }
+.success b { font: 800 1.5rem/1.2 var(--f-display); }
+.success .muted { max-width: 40ch; }
+.linkish { color: var(--brand); font-weight: 700; cursor: pointer; background: none; border: 0; padding: 0; text-decoration: underline; text-underline-offset: 3px; }
+
+/* faq */
+.faq-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 48px; align-items: start; }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 20px 0; font-weight: 700; font-size: 1.02rem; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary .pm { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--sunk); transition: transform .3s, background .3s, color .3s; }
+.faq details[open] summary .pm { transform: rotate(45deg); background: var(--brand); color: var(--brand-ink); }
+.faq details p { padding: 0 0 20px; color: var(--muted); max-width: 62ch; }
+
+.foot { background: var(--navy); color: var(--on-navy-muted); font-size: .86rem; }
+.foot .wrap { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 28px; padding-block: 48px calc(48px + env(safe-area-inset-bottom, 0px)); }
+.foot b { color: var(--on-navy); display: block; margin-bottom: 8px; }
+.foot .brand { color: var(--on-navy); margin-bottom: 12px; }
+.foot .credit { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; padding-top: 22px; border-top: 1px solid var(--glass-line); color: var(--on-navy); font-weight: 600; }
+
+.guide { position: fixed; z-index: 8; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); left: 50%; translate: -50% 0; width: min(640px, calc(100% - 32px)); display: flex; align-items: center; gap: 12px; background: color-mix(in srgb, var(--navy) 92%, transparent); color: var(--on-navy); border: 1px solid var(--glass-line); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-radius: 18px; padding: 10px 10px 10px 16px; box-shadow: 0 20px 50px -18px rgb(0 0 0 / .6); font-size: .86rem; }
+[dir="rtl"] .guide { padding: 10px 16px 10px 10px; }
+.guide p { flex: 1; min-width: 0; }
+.guide .short { display: none; font-weight: 700; }
+.guide .x { border: 0; background: transparent; color: var(--on-navy-muted); width: 30px; height: 30px; border-radius: 8px; flex: none; }
+.guide .x:hover { background: var(--glass); }
+
+/* ---------- back office ---------- */
+.app { display: grid; grid-template-columns: 252px 1fr; min-height: calc(100vh - 62px); }
+.side { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 62px); height: calc(100vh - 62px); background: var(--navy); color: var(--on-navy); padding: 22px 14px; display: flex; flex-direction: column; gap: 4px; overflow-x: hidden; overflow-y: auto; isolation: isolate; scrollbar-width: thin; }
+.side::before { content: ""; position: absolute; z-index: -1; inset: auto -80px 0 auto; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--aur-1) 45%, transparent), transparent 65%); filter: blur(20px); }
+.side .lbl { font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--on-navy-muted); padding: 6px 12px; }
+:lang(ar) .side .lbl { letter-spacing: 0; }
+.nav-b { display: flex; align-items: center; gap: 12px; border: 0; background: transparent; color: var(--on-navy-muted); text-align: start; padding: 11px 12px; border-radius: 12px; font-weight: 600; font-size: .92rem; transition: background .2s, color .2s; }
+.nav-b:hover { background: var(--glass); color: var(--on-navy); }
+.nav-b[aria-current="page"] { background: linear-gradient(135deg, color-mix(in srgb, var(--aur-1) 90%, transparent), color-mix(in srgb, var(--aur-1) 50%, transparent)); color: #fff; box-shadow: 0 10px 24px -12px var(--aur-1); }
+.badge { margin-inline-start: auto; background: #F3B23E; color: #1A1204; font-size: .7rem; font-weight: 800; border-radius: 999px; padding: 1px 8px; }
+.me { margin-top: auto; display: flex; gap: 10px; align-items: center; padding: 12px; border-radius: 14px; background: var(--glass); border: 1px solid var(--glass-line); }
+.me .av { width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg, var(--aur-1), var(--aur-2)); display: grid; place-items: center; font-weight: 800; color: #fff; flex: none; }
+.me b { display: block; font-size: .88rem; color: var(--on-navy); }
+.me span { font-size: .75rem; color: var(--on-navy-muted); }
+.side-note { font-size: .74rem; color: var(--on-navy-muted); padding: 10px 12px 0; display: grid; gap: 6px; }
+.side-note button { color: var(--grad-text-a); background: none; border: 0; padding: 0; text-align: start; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.main { min-width: 0; padding: 28px 30px 60px; display: grid; gap: 22px; align-content: start; }
+.main-head { display: flex; align-items: end; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.main-head h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); font-weight: 800; letter-spacing: -.03em; }
+:lang(ar) .main-head h2 { letter-spacing: 0; }
+.main-head .acts { display: flex; gap: 8px; flex-wrap: wrap; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 18px; display: grid; gap: 4px; box-shadow: var(--shadow); position: relative; overflow: hidden; min-width: 0; }
+.kpi .top-r { display: flex; justify-content: space-between; align-items: center; }
+.kpi .k { font-size: .82rem; font-weight: 600; color: var(--muted); }
+.kpi .v { font: 800 2rem/1.15 var(--f-display); letter-spacing: -.02em; font-variant-numeric: tabular-nums; margin-top: 6px; }
+.kpi .v small { font-size: .9rem; font-weight: 700; color: var(--muted); margin-inline-start: 4px; }
+.kpi .s { font-size: .78rem; color: var(--muted); }
+.kpi .ki { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand); }
+.kpi.warn .ki { background: var(--warn-soft); color: var(--warn); }
+.kpi.warn .v { color: var(--warn); }
+.kpi.c .ki { background: var(--coral-soft); color: var(--coral); }
+.kpi.aq .ki { background: var(--aqua-soft); color: var(--aqua); }
+.bars { display: flex; align-items: end; gap: 4px; height: 38px; margin-top: 8px; }
+.bars i { flex: 1; border-radius: 4px 4px 2px 2px; background: var(--brand-soft); min-height: 3px; transform-origin: bottom; }
+.bars i.hi { background: var(--brand); }
+.kpi.aq .bars i { background: var(--aqua-soft); } .kpi.aq .bars i.hi { background: var(--aqua); }
+.dash { display: grid; grid-template-columns: 1.55fr 1fr; gap: 20px; align-items: start; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); min-width: 0; }
+.panel-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 18px 20px 6px; }
+.panel-h h3 { font-size: 1.02rem; }
+.panel-b { padding: 8px 20px 20px; }
+.col { display: grid; gap: 20px; min-width: 0; }
+.tl { display: grid; }
+.tl-item { display: grid; grid-template-columns: 52px 22px 1fr; gap: 10px; align-items: stretch; }
+.tl-time { font: 600 .82rem/1 var(--f-mono); color: var(--muted); padding-top: 18px; text-align: end; }
+.tl-rail { position: relative; display: grid; justify-items: center; }
+.tl-rail::before { content: ""; position: absolute; top: 0; bottom: 0; width: 2px; background: var(--line); }
+.tl-item:first-child .tl-rail::before { top: 20px; } .tl-item:last-child .tl-rail::before { bottom: calc(100% - 22px); }
+.tl-dot { position: relative; margin-top: 15px; width: 12px; height: 12px; border-radius: 50%; background: var(--surface); border: 2.5px solid var(--line); }
+.tl-item.done .tl-dot { background: var(--ok); border-color: var(--ok); }
+.tl-item.noshow .tl-dot { background: var(--bad); border-color: var(--bad); }
+.tl-item.now .tl-dot { background: var(--brand); border-color: var(--brand); }
+.tl-card { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; margin-block: 3px; min-width: 0; flex-wrap: wrap; }
+.tl-item.now .tl-card { background: var(--brand-soft); }
+.tl-item.done .tl-card { opacity: .72; }
+.who { min-width: 0; flex: 1; }
+.who b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .93rem; }
+.who span { font-size: .8rem; color: var(--muted); }
+.acts { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.now-tag { font-size: .7rem; font-weight: 800; color: var(--brand); text-transform: uppercase; letter-spacing: .06em; }
+.sn { font: 700 .72rem var(--f-mono); color: var(--coral); background: var(--coral-soft); padding: 1px 7px; border-radius: 6px; white-space: nowrap; }
+.av { flex: none; width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; font-weight: 800; font-size: .8rem; background: hsl(var(--h, 170) 60% var(--av-bg)); color: hsl(var(--h, 170) 55% var(--av-fg)); }
+.src { font-size: .7rem; font-weight: 700; color: var(--aqua); background: var(--aqua-soft); padding: 1px 7px; border-radius: 6px; white-space: nowrap; }
+.empty { padding: 30px 16px; text-align: center; color: var(--muted); }
+.req { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.req:first-child { border-top: 0; }
+.cure-row { display: grid; gap: 7px; padding: 12px 0; border-top: 1px solid var(--line); }
+.cure-row:first-child { border-top: 0; }
+.cure-row .top-r { display: flex; align-items: center; gap: 10px; }
+.prog { height: 8px; border-radius: 999px; background: var(--sunk); overflow: hidden; }
+.prog i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--aur-1), var(--aur-2)); }
+.meter { height: 10px; border-radius: 999px; background: var(--bad-soft); overflow: hidden; margin: 10px 0 8px; }
+.meter i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--ok), var(--brand)); }
+.big-pct { font: 800 2.2rem/1 var(--f-display); }
+
+/* agenda */
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: .8rem; color: var(--muted); align-items: center; }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 4px; vertical-align: -2px; margin-inline-end: 6px; }
+.agenda-scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); }
+.agenda { display: grid; grid-template-columns: 60px repeat(6, minmax(112px, 1fr)); grid-template-rows: auto; grid-auto-rows: 42px; min-width: 780px; position: relative; }
+.agenda .h { position: sticky; top: 0; background: var(--surface); border-bottom: 1px solid var(--line); padding: 10px 6px; text-align: center; font-size: .8rem; font-weight: 700; z-index: 3; text-transform: capitalize; }
+.agenda .h b { display: block; font: 800 1.25rem/1.2 var(--f-display); }
+.agenda .h.today b { color: var(--brand-ink); background: var(--brand); width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; margin: 2px auto 0; font-size: 1rem; }
+.agenda .t { font: 500 .7rem var(--f-mono); color: var(--muted); padding: 3px 8px; text-align: end; translate: 0 -8px; }
+.agenda .c { border: 0; border-top: 1px solid var(--line); border-inline-start: 1px solid var(--line); background: transparent; padding: 0; }
+.agenda .c.half { border-top-style: dashed; border-top-color: color-mix(in srgb, var(--line) 60%, transparent); }
+.agenda .c.closed { background: repeating-linear-gradient(135deg, var(--sunk) 0 5px, transparent 5px 11px); cursor: default; }
+.agenda .c:not(.closed):hover { background: var(--brand-soft); }
+.appt { margin: 2px 4px; border-radius: 10px; padding: 5px 8px; font-size: .74rem; line-height: 1.3; text-align: start; border: 0; border-inline-start: 3px solid currentColor; overflow: hidden; z-index: 2; min-width: 0; transition: transform .15s, box-shadow .15s; }
+.appt:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+.appt b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink); font-weight: 700; }
+.appt span { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.appt.s-confirmed { background: var(--brand-soft); color: var(--brand); }
+.appt.s-pending { background: var(--warn-soft); color: var(--warn); }
+.appt.s-done { background: var(--ok-soft); color: var(--ok); }
+.appt.s-noshow { background: var(--bad-soft); color: var(--bad); }
+.nowline { position: absolute; height: 2px; background: var(--bad); z-index: 4; pointer-events: none; }
+.nowline::before { content: ""; position: absolute; inset-inline-start: -5px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: var(--bad); }
+
+/* patients */
+.pt-grid { display: grid; grid-template-columns: 310px 1fr; gap: 20px; align-items: start; }
+.search { position: relative; }
+.search svg { position: absolute; inset-inline-start: 12px; top: 50%; translate: 0 -50%; color: var(--muted); }
+.search .in { padding-inline-start: 38px; }
+.pt-list { max-height: 680px; overflow-y: auto; padding: 6px; }
+.pt-item { display: flex; width: 100%; gap: 11px; align-items: center; text-align: start; padding: 9px 10px; border: 0; border-radius: 12px; background: transparent; }
+.pt-item:hover { background: var(--sunk); }
+.pt-item[aria-current="true"] { background: var(--brand-soft); }
+.pt-item .nm { min-width: 0; flex: 1; }
+.pt-item .nm b { display: block; font-size: .9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pt-item .nm span { font-size: .76rem; color: var(--muted); }
+.pt-file { display: grid; gap: 22px; padding: 24px; }
+.pt-top { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.pt-top .av { width: 60px; height: 60px; border-radius: 18px; font-size: 1.2rem; }
+.pt-top h2 { font-size: 1.45rem; letter-spacing: -.02em; }
+.dl { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.dl div { background: var(--sunk); border-radius: 14px; padding: 11px 13px; min-width: 0; }
+.dl dt { font-size: .72rem; color: var(--muted); font-weight: 700; }
+.dl dd { margin: 2px 0 0; font-weight: 700; font-size: .92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cure { border: 1px solid var(--line); border-radius: 18px; padding: 18px; display: grid; gap: 16px; background: linear-gradient(180deg, var(--brand-soft), transparent 70%); }
+.cure-h { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: start; }
+.cure-h b { font: 800 1.1rem/1.25 var(--f-display); }
+.cure-n { font: 800 1.6rem/1 var(--f-display); white-space: nowrap; }
+.cure-n small { font-size: .9rem; color: var(--muted); }
+.cure-grid { display: grid; grid-template-columns: 130px 1fr; gap: 18px; align-items: center; }
+.cure-grid svg.body { width: 100%; height: auto; }
+.chart-eva { width: 100%; height: auto; display: block; }
+.chart-eva text { font: 500 10px var(--f-mono); fill: var(--muted); }
+.ex { display: grid; gap: 8px; }
+.ex-item { display: flex; align-items: center; gap: 12px; background: var(--sunk); border-radius: 12px; padding: 10px 12px; }
+.ex-item b { flex: 1; font-size: .9rem; }
+.ex-item span { font: 600 .82rem var(--f-mono); color: var(--brand); white-space: nowrap; }
+.ex-i { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: var(--surface); color: var(--brand); flex: none; }
+table.hist { width: 100%; border-collapse: collapse; font-size: .88rem; }
+table.hist th { text-align: start; font-size: .72rem; color: var(--muted); font-weight: 700; padding: 8px; border-bottom: 1px solid var(--line); }
+table.hist td { padding: 10px 8px; border-bottom: 1px solid var(--line); }
+table.hist td.num, table.hist td.mono { text-align: end; font-family: var(--f-mono); white-space: nowrap; }
+table.hist td.mono { text-align: start; }
+.tbl-scroll { overflow-x: auto; overflow-y: hidden; }
+.req-card { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.req-card:first-child { border-top: 0; }
+.req-when { text-align: center; background: var(--warn-soft); color: var(--warn); border-radius: 14px; padding: 8px 12px; min-width: 70px; line-height: 1.15; }
+.req-when b { display: block; font: 800 1.3rem/1.1 var(--f-display); }
+.req-when small { font-size: .72rem; font-weight: 700; text-transform: capitalize; }
+
+.tabbar { display: none; }
+
+/* modal + toast */
+.overlay { position: fixed; inset: 0; background: rgb(4 14 12 / .55); backdrop-filter: blur(4px); display: grid; place-items: center; z-index: 20; padding: 16px; }
+.modal { background: var(--surface); border-radius: 22px; width: min(500px, 100%); max-height: 90vh; overflow-y: auto; padding: 24px; display: grid; gap: 14px; box-shadow: 0 30px 80px rgb(0 0 0 / .35); }
+.modal h2 { font-size: 1.3rem; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+.series { border: 1px dashed color-mix(in srgb, var(--brand) 50%, var(--line)); border-radius: 14px; padding: 12px; display: grid; gap: 10px; background: var(--brand-soft); }
+.series b { font-size: .9rem; }
+.toast { position: fixed; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); left: 50%; translate: -50% 0; display: flex; align-items: center; gap: 10px; background: var(--ink); color: var(--bg); padding: 12px 18px; border-radius: 14px; font-weight: 600; font-size: .9rem; z-index: 30; max-width: calc(100% - 32px); box-shadow: 0 14px 40px rgb(0 0 0 / .3); }
+.toast svg { color: var(--ok); flex: none; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1080px) {
+  .services { grid-template-columns: repeat(2, 1fr); }
+  .band-card { grid-template-columns: repeat(2, 1fr); }
+  .feat:nth-child(3) { border-inline-start: 0; }
+  .feat:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .kpis { grid-template-columns: repeat(2, 1fr); }
+  .dash { grid-template-columns: 1fr; }
+}
+@media (max-width: 900px) {
+  .hero .wrap, .pain-grid, .cab-grid, .book, .faq-grid, .pt-grid { grid-template-columns: 1fr; }
+  .hero .wrap { padding-block: 44px 96px; gap: 20px; }
+  .stage { min-height: 520px; }
+  .sec { padding-block: 64px; }
+  .pain-grid { gap: 24px; }
+  .pain-info { display: contents; }
+  .pain-head { order: -1; }
+  .foot .wrap { grid-template-columns: 1fr 1fr; }
+  .app { grid-template-columns: 1fr; }
+  .side { display: none; }
+  .main { padding: 18px max(16px, env(safe-area-inset-right, 0px)) calc(100px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+  .tabbar { display: flex; position: fixed; inset: auto 0 0; z-index: 8; justify-content: space-around; background: color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid var(--line);
+    padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)); }
+  .tabbar button { position: relative; display: grid; justify-items: center; gap: 2px; border: 0; background: transparent; font-size: .68rem; font-weight: 700; color: var(--muted); padding: 6px 4px; min-width: 66px; border-radius: 12px; }
+  .tabbar button[aria-current="page"] { color: var(--brand); }
+  .tabbar .badge { position: absolute; top: 0; inset-inline-end: 8px; margin: 0; }
+  .pt-list { max-height: 300px; }
+  .dl { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .top .wrap { gap: 8px; }
+  .brand .bname, .demo-tag { display: none; }
+  .seg button { padding: 6px 10px; font-size: .78rem; }
+  .services, .fields, .band-card, .foot .wrap, .reco { grid-template-columns: 1fr; }
+  .feat + .feat { border-inline-start: 0; border-top: 1px solid var(--line); }
+  .feat { padding: 16px 18px; }
+  .stage { min-height: 470px; }
+  .phone { --pw: 228px; }
+  .fa { width: 190px; top: 40px; inset-inline-start: -4px; }
+  .fb { width: 210px; bottom: 30px; inset-inline-end: -6px; }
+  .fc { display: none; }
+  .book-main, .book-side { padding: 22px 18px; }
+  .card, .zcard { padding: 20px; }
+  .dr { grid-template-columns: 1fr; }
+  .dr-photo { width: 92px; height: 104px; }
+  .kpi .v { font-size: 1.6rem; }
+  .kpi { padding: 15px; }
+  .tl-item { grid-template-columns: 40px 14px 1fr; gap: 6px; }
+  .tl-time { font-size: .74rem; }
+  .tl-card { padding: 9px 8px; gap: 10px; }
+  .tl-card .who { flex: 1 1 150px; }
+  .tl-card .acts { flex-basis: 100%; padding-inline-start: 48px; }
+  .panel-b { padding: 6px 14px 16px; }
+  .panel-h { padding: 16px 14px 4px; }
+  .pt-file { padding: 18px; }
+  .pt-top .pt-id { flex: 1 1 160px; }
+  .pt-top .btn { flex: 1 1 100%; }
+  .cure-grid { grid-template-columns: 64px 1fr; gap: 10px; }
+  .guide { font-size: .8rem; }
+  .guide .btn { padding: 8px 10px; }
+  .guide .long { display: none; }
+  .guide .short { display: inline; }
+}
+
+/* ---------- motion ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .hero::before { animation: drift 16s ease-in-out infinite alternate; }
+  .hero::after { animation: drift 20s ease-in-out infinite alternate-reverse; }
+  @keyframes drift { to { transform: translate(-60px, 50px) scale(1.12); } }
+  .eyebrow i { animation: ping 2s infinite; }
+  .tl-item.now .tl-dot { animation: ping-b 2s infinite; }
+  @keyframes ping { 70% { box-shadow: 0 0 0 9px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+  @keyframes ping-b { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 60%, transparent); } 70%, 100% { box-shadow: 0 0 0 9px transparent; } }
+  .zone.on .halo, .hl-halo { animation: pulse 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  @keyframes pulse { 50% { transform: scale(1.5); opacity: .08; } }
+  .reveal > * { animation: up .7s cubic-bezier(.2, .7, .2, 1) both; }
+  .reveal > :nth-child(2) { animation-delay: .08s; } .reveal > :nth-child(3) { animation-delay: .16s; } .reveal > :nth-child(4) { animation-delay: .24s; }
+  .reveal > :nth-child(5) { animation-delay: .32s; } .reveal > :nth-child(6) { animation-delay: .4s; } .reveal > :nth-child(n+7) { animation-delay: .46s; }
+  @keyframes up { from { opacity: .001; transform: translateY(18px); } }
+  .phone-wrap { animation: bob 7s 1s ease-in-out infinite; }
+  .stage.reveal .phone-wrap { animation: rise3d 1s cubic-bezier(.2, .7, .2, 1) both, bob 7s 1.2s ease-in-out infinite; }
+  @keyframes rise3d { from { opacity: .001; transform: translateY(40px) scale(.96); } }
+  .fa { animation: up .8s .5s both, bob 6s 1.5s ease-in-out infinite; }
+  .fb { animation: up .8s .75s both, bob 7.5s 1.9s ease-in-out infinite reverse; }
+  .fc { animation: up .8s 1s both, bob 5.5s 2.2s ease-in-out infinite; }
+  @keyframes bob { 50% { transform: translateY(-10px); } }
+  .phone.done .check path, .success .check path { animation: draw .55s .2s ease-out both; }
+  .phone.done .check circle, .success .check circle { animation: pop .4s ease-out both; transform-origin: center; transform-box: fill-box; }
+  @keyframes draw { from { stroke-dashoffset: 40; } }
+  @keyframes pop { from { transform: scale(.3); } 70% { transform: scale(1.08); } }
+  .modal { animation: up .28s cubic-bezier(.2, .7, .2, 1); }
+  .overlay { animation: fade .2s ease-out; }
+  .toast { animation: toast .3s cubic-bezier(.2, .7, .2, 1); }
+  @keyframes toast { from { opacity: 0; translate: -50% 12px; } }
+  @keyframes fade { from { opacity: 0; } }
+  .chip, .day, .btn { transition: background .15s, color .15s, border-color .15s, transform .12s, box-shadow .15s; }
+  .chip:active, .day:active, .btn:active { transform: scale(.96); }
+  .bars i { animation: grow .7s cubic-bezier(.2, .7, .2, 1) both; }
+  .bars i:nth-child(2) { animation-delay: .04s; } .bars i:nth-child(3) { animation-delay: .08s; } .bars i:nth-child(4) { animation-delay: .12s; } .bars i:nth-child(5) { animation-delay: .16s; } .bars i:nth-child(6) { animation-delay: .2s; } .bars i:nth-child(7) { animation-delay: .24s; }
+  @keyframes grow { from { transform: scaleY(.05); } }
+  .prog i, .meter i { animation: fill 1s cubic-bezier(.2, .7, .2, 1) both; transform-origin: left; }
+  [dir="rtl"] .prog i, [dir="rtl"] .meter i { transform-origin: right; }
+  @keyframes fill { from { transform: scaleX(0); } }
+  .chart-eva .line { stroke-dasharray: 600; animation: trace 1.2s ease-out both; }
+  @keyframes trace { from { stroke-dashoffset: 600; } to { stroke-dashoffset: 0; } }
+  .guide { animation: toast .5s 1.2s cubic-bezier(.2, .7, .2, 1) both; }
+}</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><span class="logo" id="logoMark"></span><span class="bname" id="brandName"></span><span class="demo-tag" id="demoTag"></span></div>
+    <nav class="links" id="links"></nav>
+    <span class="spacer"></span>
+    <div class="seg" role="group" id="viewSeg">
+      <button type="button" id="vSite" data-act="view" data-v="site"></button>
+      <button type="button" id="vOffice" data-act="view" data-v="cabinet"></button>
+    </div>
+    <div class="seg" role="group" aria-label="Langue / اللغة">
+      <button type="button" id="lFr" data-act="lang" data-v="fr">FR</button>
+      <button type="button" id="lAr" data-act="lang" data-v="ar">ع</button>
+    </div>
+  </div>
+</header>
+<main id="app"></main>
+<div id="layer"></div>
+
+<script>
+(() => {
+const KEY = "kine-demo-v1";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- i18n ---------- */
+const T = {
+  fr: {
+    brand: "Cabinet de Kinésithérapie", demo: "Démo", vSite: "Site patient", vOffice: "Espace cabinet",
+    navSoins: "Soins", navPain: "Où avez-vous mal ?", navCab: "Le cabinet", navBook: "Rendez-vous", navFaq: "FAQ",
+    eyebrow: "Nouveaux patients acceptés cette semaine",
+    heroTitle: "Bougez <i>mieux</i>, sans douleur.",
+    heroLead: "Kinésithérapie, rééducation et physiothérapie à Tunis. Réservez votre séance en ligne en moins d'une minute et suivez vos progrès séance après séance.",
+    bookNow: "Réserver une séance", seePain: "Où avez-vous mal ?",
+    openNow: "Ouvert maintenant · jusqu'à {h}", closedNow: "Fermé · ouvre {d} à {h}", tomorrow: "demain", todayW: "aujourd'hui",
+    cnam: "Conventionné CNAM", langs: "Français · العربية",
+    pmTitle: "Réserver une séance", pmSvc: "Soin", pmDay: "Jour", pmTime: "Heure", pmBtn: "Confirmer", pmDone: "Séance confirmée !", pmDoneSub: "Rappel la veille sur WhatsApp",
+    fConfirmed: "Séance confirmée", fReminder: "Rappel automatique", fBubble: "Bonjour ! Votre séance de kiné est demain à 10:30. Pensez à votre ordonnance. Répondez 1 pour confirmer.",
+    fEva: "Douleur (EVA) en 6 séances",
+    b1: "Réservation 24h/24", b1s: "Même quand le cabinet est fermé", b2: "Rappels automatiques", b2s: "WhatsApp et SMS la veille",
+    b3: "Suivi des séances", b3s: "Séance 6/10, douleur en baisse", b4: "Français et arabe", b4s: "Site et messages bilingues",
+    kSoins: "Nos soins", servicesTitle: "Une rééducation <i>adaptée</i> à chaque patient.", servicesSub: "Tarifs indicatifs par séance, en dinars. Prise en charge CNAM sur ordonnance. Cliquez sur un soin pour réserver.",
+    from: "dès", min: "min", dt: "DT", bookThis: "Réserver", perSession: "/ séance",
+    painEyebrow: "Où avez-vous mal ?", painTitle: "Montrez-nous <i>où</i> ça fait mal.", painLead: "Touchez la zone douloureuse, indiquez l'intensité de votre douleur, et nous vous orientons vers le bon soin.",
+    zCommon: "Problèmes fréquents", zSvc: "Soin conseillé", zSessions: "Nombre de séances habituel", sessionsU: "séances",
+    evaQ: "Intensité de la douleur (EVA)", eva0: "Aucune douleur", eva1: "Légère", eva2: "Modérée", eva3: "Intense", eva4: "Très intense",
+    evaAlert: "Douleur très intense : si elle est apparue brutalement ou après un choc, consultez d'abord votre médecin.",
+    bookBilan: "Réserver un bilan", pickZone: "Touchez une zone sur le schéma.",
+    cabEyebrow: "Le cabinet", cabTitle: "Un plateau technique moderne, un suivi <i>personnalisé</i>.",
+    drName: "Prénom Nom", drRole: "Kinésithérapeute", drBio: "Kinésithérapeute diplômé(e) d'État. Votre parcours, vos spécialités (sport, post-opératoire, respiratoire…) et les photos de votre cabinet apparaissent ici.",
+    perk1: "Conventionné CNAM", perk2: "Ondes de choc · TECAR", perk3: "Séances à domicile", perk4: "Accès PMR · ascenseur",
+    hours: "Horaires", closed: "Fermé", where: "Nous trouver", addr: "Avenue Habib Bourguiba, Tunis", addrNote: "Adresse d'exemple",
+    bookEyebrow: "Réservation", bookTitle: "Réservez votre séance en <i>une minute</i>.",
+    s1: "Choisissez le soin", s2: "Choisissez le jour", s3: "Choisissez l'heure", s4: "Vos coordonnées",
+    pickService: "Choisissez d'abord un soin.", pickDay: "Choisissez un jour pour voir les créneaux libres.", noSlot: "Plus de créneau ce jour-là. Essayez un autre jour.",
+    name: "Nom et prénom", phone: "Téléphone", rxQ: "Avez-vous une ordonnance ?", rxYes: "Oui", rxNo: "Non", rxSoon: "Pas encore", confirm: "Envoyer ma demande",
+    sumTitle: "Votre séance", sumSvc: "Soin", sumZone: "Zone", sumDate: "Date", sumTime: "Heure", sumRx: "Ordonnance", sumPrice: "À partir de", sumNote: "Le cabinet confirme par SMS. Rappel automatique la veille.", notChosen: "à choisir",
+    sent: "Demande envoyée !", sentSub: "Le cabinet vous confirme par SMS dans la journée. Pensez à apporter votre ordonnance et vos examens (radio, IRM).",
+    seeOffice: "Voir la demande arriver dans l'Espace cabinet", again: "Réserver une autre séance",
+    needName: "Indiquez votre nom et prénom.", needPhone: "Indiquez un numéro tunisien à 8 chiffres.",
+    faqEyebrow: "Questions", faqTitle: "Vous vous <i>demandez</i> peut-être…", faqSub: "Une autre question ? Appelez le cabinet, nous répondons du lundi au samedi.",
+    q1: "Faut-il une ordonnance ?", a1: "Pour une prise en charge CNAM, oui : apportez l'ordonnance de votre médecin à la première séance. Sans ordonnance, vous pouvez réserver un bilan.",
+    q2: "Combien de séances faut-il ?", a2: "Cela dépend de votre problème : en général 10 à 20 séances, définies avec vous lors du bilan.",
+    q3: "Que dois-je apporter ?", a3: "Votre ordonnance, vos examens (radio, IRM, compte rendu opératoire) et une tenue confortable.",
+    q4: "Puis-je annuler ou déplacer une séance ?", a4: "Oui. Répondez au message de rappel ou appelez le cabinet au moins 24 h avant.",
+    footAbout: "Démonstration : le nom, les photos, l'adresse, les soins et les tarifs sont remplacés par ceux de votre cabinet.", footContact: "Contact", footHours: "Horaires", footHoursTxt: "Lun–Ven 08:00–19:00 · Sam 08:00–13:00",
+    credit: "Démo réalisée par Oussama Sboui, ingénieur logiciel",
+    guide: "Démo interactive : réservez une séance comme un patient, puis ouvrez l'Espace cabinet pour la voir arriver.", guideShort: "Démo : réservez, puis voyez le côté cabinet.", guideBtn: "Espace cabinet", close: "Fermer",
+    dash: "Tableau de bord", agenda: "Agenda", patients: "Patients", requests: "Demandes", menu: "Menu",
+    hello: "Bonjour", railNote: "Données fictives pour la démonstration. Vos modifications restent dans votre navigateur.", reset: "Réinitialiser la démo",
+    kToday: "Séances aujourd'hui", kPending: "À confirmer", kCures: "Cures en cours", kRevenue: "Encaissé aujourd'hui",
+    kTodayS: "{n} terminées · 7 derniers jours", kPendingS: "demandes en ligne", kCuresS: "{n} terminées ce mois", kRevenueS: "7 derniers jours",
+    remind: "Rappels de demain", reminded: "{n} rappels WhatsApp/SMS envoyés pour demain (simulation).", remindNone: "Aucune séance demain.", newAppt: "Nouvelle séance",
+    program: "Programme du jour", inProgress: "En cours", noAppt: "Aucune séance aujourd'hui.", arrived: "Terminé", absent: "Absent", online: "En ligne",
+    curesTitle: "Cures en cours", attendance: "Taux de présence", attendanceS: "{a} présents · {b} absents sur 30 jours", seeAll: "Tout voir", total: "séances", bilan: "Bilan",
+    week: "Semaine du {d}", prev: "Semaine précédente", next: "Semaine suivante", thisWeek: "Cette semaine",
+    legConfirmed: "Confirmée", legPending: "À confirmer", legDone: "Terminée", legNoshow: "Absent", clickSlot: "Cliquez sur un créneau libre pour planifier une séance ou une série.",
+    search: "Rechercher un nom ou un numéro…", newPatient: "Nouveau patient",
+    age: "Âge", years: "ans", cnamCover: "Prise en charge CNAM", cnamOk: "Accordée", cnamWait: "En attente", nextVisit: "Prochaine séance", balance: "Reste à payer", none: "—",
+    cureNow: "Cure en cours", cureDone: "Cure terminée", rxBy: "Prescrit par : {r}", freqTxt: "{f} séances / semaine", sessionShort: "Séance", noCure: "Pas encore de cure. Le bilan définira le programme de rééducation.", planSeries: "Planifier une série",
+    evaChart: "Douleur (EVA) séance après séance", evaNone: "La courbe apparaîtra après les premières séances.",
+    exTitle: "Programme d'exercices à domicile", exSend: "Envoyer sur WhatsApp", exSent: "Programme d'exercices envoyé sur WhatsApp (simulation).",
+    history: "Historique des séances", hDate: "Date", hNo: "Séance", hAct: "Soin", hEva: "EVA", hPrice: "Montant",
+    notes: "Notes cliniques", saveNotes: "Enregistrer", saved: "Notes enregistrées.", noHist: "Pas encore de séance réalisée.",
+    reqTitle: "Demandes en ligne", reqEmpty: "Aucune demande en attente. Réservez depuis le Site patient pour la voir arriver ici.",
+    accept: "Confirmer", refuse: "Refuser", accepted: "Séance confirmée. SMS envoyé au patient (simulation).", refused: "Demande refusée.", received: "reçue {d}", rxLabel: "Ordonnance",
+    mNew: "Nouvelle séance", mPatient: "Patient", mService: "Soin", mSave: "Planifier", mCancel: "Fermer", mExisting: "— Choisir un patient —", mOrNew: "ou nouveau patient :", mTime: "Heure",
+    mSeries: "Série de séances", mCount: "Nombre de séances", mFreq: "Fréquence", perWeek: "{n} / semaine", one: "1 seule séance",
+    added: "Séance ajoutée.", addedSeries: "{n} séances planifiées, jusqu'au {d}.",
+    mAppt: "Séance", cancelAppt: "Annuler la séance", cancelled: "Séance annulée.", updated: "Statut mis à jour.",
+    openFile: "Ouvrir le dossier", pCreated: "Patient ajouté.", birth: "Année de naissance",
+    st: { confirmed: "Confirmée", pending: "À confirmer", done: "Terminée", noshow: "Absent", cancelled: "Annulée" },
+    days: ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
+    resetDone: "Démo réinitialisée."
+  },
+  ar: {
+    brand: "مركز العلاج الطبيعي", demo: "تجربة", vSite: "موقع المرضى", vOffice: "فضاء المركز",
+    navSoins: "العلاجات", navPain: "أين تشعر بالألم؟", navCab: "المركز", navBook: "المواعيد", navFaq: "أسئلة",
+    eyebrow: "نستقبل مرضى جددًا هذا الأسبوع",
+    heroTitle: "تحرّك <i>بشكل أفضل</i>، دون ألم.",
+    heroLead: "العلاج الطبيعي وتقويم الأعضاء في تونس. احجز حصتك عبر الإنترنت في أقل من دقيقة وتابع تقدّمك حصة بعد حصة.",
+    bookNow: "احجز حصة", seePain: "أين تشعر بالألم؟",
+    openNow: "مفتوح الآن · إلى غاية {h}", closedNow: "مغلق · يفتح {d} على الساعة {h}", tomorrow: "غدًا", todayW: "اليوم",
+    cnam: "متعاقد مع الكنام", langs: "Français · العربية",
+    pmTitle: "حجز حصة", pmSvc: "العلاج", pmDay: "اليوم", pmTime: "الساعة", pmBtn: "تأكيد", pmDone: "تم تأكيد الحصة!", pmDoneSub: "تذكير عبر واتساب قبل يوم",
+    fConfirmed: "تم تأكيد الحصة", fReminder: "تذكير آلي", fBubble: "مرحبًا! حصتك غدًا على الساعة 10:30. لا تنسَ الوصفة الطبية. أجب بـ 1 للتأكيد.",
+    fEva: "سلم الألم خلال 6 حصص",
+    b1: "حجز على مدار الساعة", b1s: "حتى عندما يكون المركز مغلقًا", b2: "تذكيرات آلية", b2s: "واتساب و SMS قبل يوم",
+    b3: "متابعة الحصص", b3s: "الحصة 6/10، والألم يتراجع", b4: "فرنسية وعربية", b4s: "موقع ورسائل بلغتين",
+    kSoins: "علاجاتنا", servicesTitle: "تأهيل <i>مناسب</i> لكل مريض.", servicesSub: "الأسعار تقريبية للحصة بالدينار. تكفّل الكنام بوصفة طبية. انقر على علاج لحجزه.",
+    from: "ابتداءً من", min: "دق", dt: "د.ت", bookThis: "احجز", perSession: "/ حصة",
+    painEyebrow: "أين تشعر بالألم؟", painTitle: "أرِنا <i>أين</i> يؤلمك.", painLead: "انقر على منطقة الألم، وحدّد شدّته، وسنوجّهك إلى العلاج المناسب.",
+    zCommon: "مشاكل شائعة", zSvc: "العلاج المقترح", zSessions: "عدد الحصص المعتاد", sessionsU: "حصص",
+    evaQ: "شدة الألم (سلم الألم)", eva0: "لا ألم", eva1: "خفيف", eva2: "متوسط", eva3: "شديد", eva4: "شديد جدًا",
+    evaAlert: "ألم شديد جدًا: إذا ظهر فجأة أو بعد صدمة، استشر طبيبك أولًا.",
+    bookBilan: "احجز فحصًا تقييميًا", pickZone: "انقر على منطقة في الرسم.",
+    cabEyebrow: "المركز", cabTitle: "تجهيزات حديثة ومتابعة <i>شخصية</i>.",
+    drName: "الاسم واللقب", drRole: "أخصائي علاج طبيعي", drBio: "أخصائي علاج طبيعي متحصّل على شهادة الدولة. تظهر هنا مسيرتك واختصاصاتك (رياضي، بعد العمليات، تنفسي…) وصور مركزك.",
+    perk1: "متعاقد مع الكنام", perk2: "موجات صادمة · TECAR", perk3: "حصص في المنزل", perk4: "مدخل لذوي الإعاقة · مصعد",
+    hours: "أوقات العمل", closed: "مغلق", where: "موقعنا", addr: "شارع الحبيب بورقيبة، تونس", addrNote: "عنوان للتجربة",
+    bookEyebrow: "الحجز", bookTitle: "احجز حصتك في <i>دقيقة واحدة</i>.",
+    s1: "اختر العلاج", s2: "اختر اليوم", s3: "اختر الساعة", s4: "معلوماتك",
+    pickService: "اختر العلاج أولًا.", pickDay: "اختر يومًا لرؤية المواعيد المتاحة.", noSlot: "لا توجد مواعيد متاحة في هذا اليوم. جرّب يومًا آخر.",
+    name: "الاسم واللقب", phone: "الهاتف", rxQ: "هل لديك وصفة طبية؟", rxYes: "نعم", rxNo: "لا", rxSoon: "ليس بعد", confirm: "أرسل طلبي",
+    sumTitle: "حصتك", sumSvc: "العلاج", sumZone: "المنطقة", sumDate: "التاريخ", sumTime: "الساعة", sumRx: "الوصفة", sumPrice: "ابتداءً من", sumNote: "يؤكد المركز عبر SMS، مع تذكير آلي قبل يوم.", notChosen: "لم يُحدَّد",
+    sent: "تم إرسال الطلب!", sentSub: "سيؤكد المركز حصتك برسالة SMS خلال اليوم. لا تنسَ إحضار الوصفة والفحوصات (أشعة، رنين مغناطيسي).",
+    seeOffice: "شاهد الطلب يصل إلى فضاء المركز", again: "حجز حصة أخرى",
+    needName: "أدخل اسمك ولقبك.", needPhone: "أدخل رقمًا تونسيًا من 8 أرقام.",
+    faqEyebrow: "أسئلة", faqTitle: "ربما <i>تتساءل</i>…", faqSub: "سؤال آخر؟ اتصل بالمركز، نجيبك من الإثنين إلى السبت.",
+    q1: "هل أحتاج إلى وصفة طبية؟", a1: "للتكفّل من الكنام، نعم: أحضر وصفة طبيبك في الحصة الأولى. دون وصفة، يمكنك حجز فحص تقييمي.",
+    q2: "كم حصة أحتاج؟", a2: "حسب حالتك: عادة من 10 إلى 20 حصة، يتم تحديدها معك أثناء الفحص التقييمي.",
+    q3: "ماذا أحضر معي؟", a3: "الوصفة الطبية، الفحوصات (أشعة، رنين مغناطيسي، تقرير العملية) ولباسًا مريحًا.",
+    q4: "هل يمكنني إلغاء حصة أو تغييرها؟", a4: "نعم. أجب على رسالة التذكير أو اتصل بالمركز قبل 24 ساعة على الأقل.",
+    footAbout: "نسخة تجريبية: يتم تعويض الاسم والصور والعنوان والعلاجات والأسعار بمعطيات مركزك.", footContact: "اتصل بنا", footHours: "أوقات العمل", footHoursTxt: "الإثنين–الجمعة 08:00–19:00 · السبت 08:00–13:00",
+    credit: "نسخة تجريبية من إنجاز Oussama Sboui، مهندس برمجيات",
+    guide: "نسخة تفاعلية: احجز حصة كمريض، ثم افتح فضاء المركز لتراها تصل.", guideShort: "تجربة: احجز ثم شاهد جهة المركز.", guideBtn: "فضاء المركز", close: "إغلاق",
+    dash: "لوحة القيادة", agenda: "الأجندة", patients: "المرضى", requests: "الطلبات", menu: "القائمة",
+    hello: "مرحبًا", railNote: "بيانات وهمية للتجربة. تبقى تعديلاتك في متصفحك فقط.", reset: "إعادة ضبط التجربة",
+    kToday: "حصص اليوم", kPending: "في انتظار التأكيد", kCures: "برامج علاج جارية", kRevenue: "مداخيل اليوم",
+    kTodayS: "{n} منتهية · آخر 7 أيام", kPendingS: "طلبات عبر الإنترنت", kCuresS: "{n} منتهية هذا الشهر", kRevenueS: "آخر 7 أيام",
+    remind: "تذكيرات الغد", reminded: "تم إرسال {n} تذكيرات واتساب/SMS لحصص الغد (محاكاة).", remindNone: "لا توجد حصص غدًا.", newAppt: "حصة جديدة",
+    program: "برنامج اليوم", inProgress: "جارٍ الآن", noAppt: "لا توجد حصص اليوم.", arrived: "انتهت", absent: "غائب", online: "عبر الإنترنت",
+    curesTitle: "برامج علاج جارية", attendance: "نسبة الحضور", attendanceS: "{a} حاضر · {b} غائب خلال 30 يومًا", seeAll: "عرض الكل", total: "حصص", bilan: "فحص تقييمي",
+    week: "أسبوع {d}", prev: "الأسبوع السابق", next: "الأسبوع التالي", thisWeek: "هذا الأسبوع",
+    legConfirmed: "مؤكدة", legPending: "في الانتظار", legDone: "منتهية", legNoshow: "غائب", clickSlot: "انقر على خانة فارغة لبرمجة حصة أو سلسلة حصص.",
+    search: "ابحث بالاسم أو الرقم…", newPatient: "مريض جديد",
+    age: "العمر", years: "سنة", cnamCover: "تكفّل الكنام", cnamOk: "مقبول", cnamWait: "في الانتظار", nextVisit: "الحصة القادمة", balance: "المبلغ المتبقي", none: "—",
+    cureNow: "برنامج علاج جارٍ", cureDone: "برنامج علاج منتهٍ", rxBy: "بوصفة من: {r}", freqTxt: "{f} حصص في الأسبوع", sessionShort: "حصة", noCure: "لا يوجد برنامج علاج بعد. سيحدّد الفحص التقييمي برنامج التأهيل.", planSeries: "برمجة سلسلة حصص",
+    evaChart: "سلم الألم حصة بعد حصة", evaNone: "سيظهر المنحنى بعد الحصص الأولى.",
+    exTitle: "تمارين منزلية", exSend: "إرسال عبر واتساب", exSent: "تم إرسال برنامج التمارين عبر واتساب (محاكاة).",
+    history: "سجل الحصص", hDate: "التاريخ", hNo: "الحصة", hAct: "العلاج", hEva: "الألم", hPrice: "المبلغ",
+    notes: "ملاحظات سريرية", saveNotes: "حفظ", saved: "تم حفظ الملاحظات.", noHist: "لم تُنجز أي حصة بعد.",
+    reqTitle: "طلبات الحجز", reqEmpty: "لا توجد طلبات في الانتظار. احجز من موقع المرضى لتراها تصل هنا.",
+    accept: "تأكيد", refuse: "رفض", accepted: "تم تأكيد الحصة وإرسال SMS للمريض (محاكاة).", refused: "تم رفض الطلب.", received: "وصل {d}", rxLabel: "الوصفة",
+    mNew: "حصة جديدة", mPatient: "المريض", mService: "العلاج", mSave: "برمجة", mCancel: "إغلاق", mExisting: "— اختر مريضًا —", mOrNew: "أو مريض جديد:", mTime: "الساعة",
+    mSeries: "سلسلة حصص", mCount: "عدد الحصص", mFreq: "الوتيرة", perWeek: "{n} في الأسبوع", one: "حصة واحدة فقط",
+    added: "تمت إضافة الحصة.", addedSeries: "تمت برمجة {n} حصص، إلى غاية {d}.",
+    mAppt: "حصة", cancelAppt: "إلغاء الحصة", cancelled: "تم إلغاء الحصة.", updated: "تم تحديث الحالة.",
+    openFile: "فتح الملف", pCreated: "تمت إضافة المريض.", birth: "سنة الولادة",
+    st: { confirmed: "مؤكدة", pending: "في الانتظار", done: "منتهية", noshow: "غائب", cancelled: "ملغاة" },
+    days: ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"],
+    resetDone: "تمت إعادة ضبط التجربة."
+  }
+};
+const SERVICES = [
+  { id: "bilan", fr: "Bilan kiné", ar: "فحص تقييمي", dur: 60, price: 50, h: 170, dfr: "Évaluation complète et programme de rééducation.", dar: "تقييم شامل وبرنامج تأهيل." },
+  { id: "dos", fr: "Dos et cervicales", ar: "الظهر والرقبة", dur: 30, price: 35, h: 200, dfr: "Lombalgie, sciatique, torticolis, posture.", dar: "آلام أسفل الظهر، عرق النسا، الرقبة، الوضعية." },
+  { id: "postop", fr: "Rééducation post-opératoire", ar: "تأهيل بعد العملية", dur: 60, price: 45, h: 230, dfr: "Genou (LCA), épaule, hanche, prothèses.", dar: "الركبة، الكتف، الورك، المفاصل الاصطناعية." },
+  { id: "sport", fr: "Rééducation sportive", ar: "تأهيل رياضي", dur: 30, price: 40, h: 25, dfr: "Entorses, tendinites, reprise du sport.", dar: "التواءات، التهاب الأوتار، العودة إلى الرياضة." },
+  { id: "resp", fr: "Kiné respiratoire", ar: "علاج طبيعي تنفسي", dur: 30, price: 30, h: 190, dfr: "Bronchiolite du nourrisson, asthme, BPCO.", dar: "التهاب القصيبات عند الرضع، الربو، الانسداد الرئوي." },
+  { id: "drainage", fr: "Drainage lymphatique", ar: "تصريف لمفاوي", dur: 60, price: 60, h: 280, dfr: "Œdèmes, jambes lourdes, après chirurgie.", dar: "الوذمات، ثقل الساقين، بعد العمليات." },
+  { id: "massage", fr: "Massage thérapeutique", ar: "تدليك علاجي", dur: 30, price: 50, h: 150, dfr: "Contractures, stress, récupération.", dar: "التشنجات العضلية، التوتر، الاسترجاع." },
+  { id: "perinee", fr: "Rééducation périnéale", ar: "تأهيل عضلات الحوض", dur: 30, price: 40, h: 330, dfr: "Après l'accouchement, fuites urinaires.", dar: "بعد الولادة، تسرّب البول." }
+];
+const svc = id => SERVICES.find(s => s.id === id);
+// body-map zones: dot positions on a 200x420 front view
+const ZONES = {
+  cou: { pos: [[100, 70]], svc: "dos", n: "8–12", fr: "Cou et cervicales", ar: "الرقبة", pfr: "Torticolis, cervicalgie, douleurs liées à l'écran", par: "تشنج الرقبة، آلام الفقرات العنقية، آلام الجلوس أمام الشاشة" },
+  epaule: { pos: [[64, 90], [136, 90]], svc: "sport", n: "10–15", fr: "Épaule", ar: "الكتف", pfr: "Tendinite, capsulite, luxation, après chirurgie", par: "التهاب الأوتار، تيبّس الكتف، خلع، بعد عملية" },
+  dos: { pos: [[100, 124]], svc: "dos", n: "8–12", fr: "Haut du dos", ar: "أعلى الظهر", pfr: "Dorsalgie, posture, scoliose", par: "آلام الظهر، الوضعية، الجنف" },
+  coude: { pos: [[47, 152], [153, 152]], svc: "sport", n: "8–12", fr: "Coude", ar: "المرفق", pfr: "Tennis-elbow, épicondylite", par: "مرفق التنس، التهاب اللقيمة" },
+  lombaires: { pos: [[100, 190]], svc: "dos", n: "10–20", fr: "Bas du dos", ar: "أسفل الظهر", pfr: "Lombalgie, sciatique, hernie discale", par: "آلام أسفل الظهر، عرق النسا، الانزلاق الغضروفي" },
+  poignet: { pos: [[41, 212], [159, 212]], svc: "postop", n: "10–15", fr: "Poignet et main", ar: "المعصم واليد", pfr: "Fracture, canal carpien, entorse", par: "كسر، متلازمة النفق الرسغي، التواء" },
+  hanche: { pos: [[79, 236], [121, 236]], svc: "postop", n: "15–20", fr: "Hanche", ar: "الورك", pfr: "Arthrose, prothèse de hanche", par: "خشونة المفصل، مفصل اصطناعي" },
+  genou: { pos: [[81, 318], [119, 318]], svc: "postop", n: "15–25", fr: "Genou", ar: "الركبة", pfr: "Entorse, ligaments croisés (LCA), ménisque, prothèse", par: "التواء، الرباط الصليبي، الغضروف الهلالي، مفصل اصطناعي" },
+  cheville: { pos: [[80, 384], [120, 384]], svc: "sport", n: "8–12", fr: "Cheville et pied", ar: "الكاحل والقدم", pfr: "Entorse, tendinite d'Achille, fracture", par: "التواء، التهاب وتر أخيل، كسر" }
+};
+const EX = {
+  cou: [["Rotations lentes du cou", "تدوير الرقبة ببطء", "3 × 10"], ["Rétraction du menton", "سحب الذقن للخلف", "3 × 10"], ["Étirement des trapèzes", "تمطيط العضلة شبه المنحرفة", "3 × 30 s"]],
+  epaule: [["Pendulaire de Codman", "تمرين البندول", "3 × 1 min"], ["Rotation externe avec élastique", "تدوير خارجي بالمطاط", "3 × 12"], ["Élévation contre le mur", "رفع الذراع على الحائط", "3 × 10"]],
+  dos: [["Ouverture thoracique", "فتح القفص الصدري", "3 × 10"], ["Rétraction des omoplates", "ضم لوحي الكتف", "3 × 12"], ["Chat–vache", "تمرين القط والبقرة", "3 × 10"]],
+  coude: [["Excentrique du poignet", "تمرين لامركزي للمعصم", "3 × 15"], ["Étirement des épicondyliens", "تمطيط عضلات الساعد", "3 × 30 s"], ["Prise de balle souple", "الضغط على كرة لينة", "3 × 20"]],
+  lombaires: [["Pont fessier", "رفع الحوض", "3 × 12"], ["Gainage ventral", "تمرين البلانك", "3 × 30 s"], ["Bird-dog", "تمرين الطائر والكلب", "3 × 10"]],
+  poignet: [["Flexion–extension du poignet", "ثني ومد المعصم", "3 × 15"], ["Pâte de rééducation", "عجينة التأهيل", "3 × 1 min"], ["Pronosupination", "تدوير الساعد", "3 × 12"]],
+  hanche: [["Abduction allongé", "إبعاد الساق مستلقيًا", "3 × 12"], ["Pont fessier", "رفع الحوض", "3 × 12"], ["Marche avec appui", "المشي مع الإسناد", "10 min"]],
+  genou: [["Contraction du quadriceps", "شد عضلة الفخذ", "3 × 15"], ["Flexion du genou assis", "ثني الركبة جالسًا", "3 × 12"], ["Montée de marche", "صعود الدرج", "3 × 10"]],
+  cheville: [["Alphabet avec le pied", "كتابة الحروف بالقدم", "2 × 1"], ["Montée sur pointes", "الوقوف على أطراف الأصابع", "3 × 15"], ["Équilibre unipodal", "التوازن على قدم واحدة", "3 × 30 s"]],
+  resp: [["Respiration abdominale", "التنفس البطني", "3 × 10"], ["Expiration lèvres pincées", "الزفير بشفتين مضمومتين", "3 × 10"], ["Toux contrôlée", "السعال المتحكم فيه", "2 × 5"]]
+};
+const RX = { ortho: ["chirurgien orthopédiste", "جراح العظام"], gen: ["médecin généraliste", "طبيب عام"], rhumato: ["rhumatologue", "طبيب الروماتيزم"], sport: ["médecin du sport", "طبيب رياضي"], pneumo: ["pneumologue", "طبيب الأمراض الصدرية"] };
+
+const ICONS = {
+  pulse: '<path d="M3 12h4l2-5 4 10 2-5h6"/>',
+  bilan: '<path d="M9 3h6v3H9z"/><path d="M8 4.5H6a1 1 0 0 0-1 1V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5.5a1 1 0 0 0-1-1h-2"/><path d="M9 12h6M9 16h4"/>',
+  dos: '<path d="M12 2.5v19"/><rect x="8.5" y="4" width="7" height="3.2" rx="1.4"/><rect x="8.5" y="9.4" width="7" height="3.2" rx="1.4"/><rect x="8.5" y="14.8" width="7" height="3.2" rx="1.4"/>',
+  postop: '<path d="M8 3c0 5 1 7.5 4 9s4 4 4 9"/><circle cx="12" cy="12" r="2.6"/>',
+  sport: '<path d="M6.5 7v10M17.5 7v10M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/>',
+  resp: '<path d="M12 4v8"/><path d="M12 10c-1.5-1-3-1-4 0-2.5 2.5-4 7-3.5 9.5.3 1.2 1.6 1.6 2.8 1.1C9.5 20 11 18.5 12 16"/><path d="M12 10c1.5-1 3-1 4 0 2.5 2.5 4 7 3.5 9.5-.3 1.2-1.6 1.6-2.8 1.1C14.5 20 13 18.5 12 16"/>',
+  drainage: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>',
+  massage: '<path d="M7 11V6a1.5 1.5 0 0 1 3 0v5M10 10V4.5a1.5 1.5 0 0 1 3 0V10M13 10V5.5a1.5 1.5 0 0 1 3 0V12M16 9.5a1.5 1.5 0 0 1 3 0V14a7 7 0 0 1-7 7h-1a6 6 0 0 1-5-2.7L3.5 15a1.5 1.5 0 0 1 2.5-1.7L7 15"/>',
+  perinee: '<circle cx="12" cy="12" r="8"/><path d="M12 7.5c-2.2 2.2-2.2 6.8 0 9 2.2-2.2 2.2-6.8 0-9z"/>',
+  person: '<circle cx="12" cy="5" r="2.2"/><path d="M8 21l2-7-3-3 3-3h4l3 3-3 3 2 7"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  checkc: '<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
+  check: '<path d="m5 12 4.5 4.5L19 7"/>',
+  trend: '<path d="M3 7l6 6 4-4 8 8"/><path d="M15 17h6v-6"/>',
+  globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/>',
+  pin: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  shield: '<path d="M12 3 4.5 6v6c0 4.5 3.2 7.8 7.5 9 4.3-1.2 7.5-4.5 7.5-9V6z"/><path d="m9 12 2 2 4-4"/>',
+  wave: '<path d="M2 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0"/>',
+  home: '<path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/>',
+  access: '<circle cx="12" cy="4.5" r="1.8"/><path d="M5 8.5h14M12 8.5v5l-3.5 7M12 13.5l3.5 7"/>',
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
+  cal: '<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c2 .7 3.2 2.5 3.5 5.2"/>',
+  inbox: '<path d="M3.5 13 6 5h12l2.5 8v6a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1z"/><path d="M3.5 13H9l1 2.5h4L15 13h5.5"/>',
+  money: '<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.8"/><path d="M6 9.5v5M18 9.5v5"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  search: '<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>',
+  chevL: '<path d="m15 5-7 7 7 7"/>', chevR: '<path d="m9 5 7 7-7 7"/>',
+  x: '<path d="M6 6l12 12M18 6 6 18"/>',
+  alert: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
+  code: '<path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16"/>',
+  wa: '<path d="M4 20l1.3-4A8 8 0 1 1 8 18.8z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 .8a4 4 0 0 1-1.8-1.8l.8-1-1-2z"/>'
+};
+const icon = (k, s = 20, w = 1.8) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k]}</svg>`;
+const checkSvg = (s = 64) => `<svg class="check" width="${s}" height="${s}" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="25"/><path d="M15 27l7 7 15-16"/></svg>`;
+
+let lang = "fr";
+const t = (k, vars) => { let s = T[lang][k] ?? T.fr[k] ?? k; if (vars) for (const v in vars) s = s.replace("{" + v + "}", vars[v]); return s; };
+const sName = s => s[lang];
+const zName = k => ZONES[k] ? ZONES[k][lang] : "";
+const loc = () => (lang === "ar" ? "ar-TN-u-nu-latn" : "fr-FR");
+
+/* ---------- dates & slots ---------- */
+const pad = n => String(n).padStart(2, "0");
+const ymd = d => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+const parse = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const TODAY = ymd(new Date());
+const toMin = hm => { const [h, m] = hm.split(":").map(Number); return h * 60 + m; };
+const toHM = m => pad(Math.floor(m / 60)) + ":" + pad(m % 60);
+const nowMin = () => { const d = new Date(); return d.getHours() * 60 + d.getMinutes(); };
+const RANGES = wd => (wd === 0 ? [] : wd === 6 ? [[480, 780]] : [[480, 780], [840, 1140]]);
+function slotsFor(dateStr) { const out = []; for (const [a, b] of RANGES(parse(dateStr).getDay())) for (let m = a; m < b; m += 30) out.push(toHM(m)); return out; }
+const ALL_ROWS = (() => { const r = []; for (let m = 480; m < 1140; m += 30) r.push(toHM(m)); return r; })();
+function busyOf(appts, dateStr) {
+  const set = new Set();
+  for (const a of appts) {
+    if (a.date !== dateStr || a.status === "cancelled") continue;
+    const st = toMin(a.time); for (let i = 0; i < svc(a.service).dur / 30; i++) set.add(toHM(st + i * 30));
+  }
+  return set;
+}
+function freeSlotsIn(appts, dateStr, dur, keepPast) {
+  const sl = slotsFor(dateStr), b = busyOf(appts, dateStr), out = [];
+  for (const s of sl) {
+    if (!keepPast && dateStr === TODAY && toMin(s) <= nowMin() + 30) continue;
+    let ok = true;
+    for (let i = 0; i < dur / 30; i++) { const x = toHM(toMin(s) + i * 30); if (!sl.includes(x) || b.has(x)) { ok = false; break; } }
+    if (ok) out.push(s);
+  }
+  return out;
+}
+const freeSlots = (d, dur) => freeSlotsIn(S.appts, d, dur);
+const fmtDay = (s, opts) => parse(s).toLocaleDateString(loc(), opts || { weekday: "short", day: "numeric", month: "short" });
+function bookingDays(n = 14) { const out = []; let d = new Date(); while (out.length < n) { const s = ymd(d); if (slotsFor(s).length && (s !== TODAY || nowMin() < 1110)) out.push(s); d = addDays(d, 1); } return out; }
+function openStatus() {
+  const d = new Date(), m = nowMin();
+  for (const [a, b] of RANGES(d.getDay())) if (m >= a && m < b) return { open: true, text: t("openNow", { h: toHM(b) }) };
+  for (let i = 0; i < 8; i++) {
+    const x = addDays(d, i), r = RANGES(x.getDay()).find(([a]) => i > 0 || a > m);
+    if (r) return { open: false, text: t("closedNow", { d: i === 0 ? t("todayW") : i === 1 ? t("tomorrow") : T[lang].days[x.getDay()].toLowerCase(), h: toHM(r[0]) }) };
+  }
+  return { open: false, text: "" };
+}
+const evaLabel = v => t(v === 0 ? "eva0" : v <= 3 ? "eva1" : v <= 6 ? "eva2" : v <= 8 ? "eva3" : "eva4");
+
+/* ---------- data ---------- */
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let x = Math.imul(seed ^ seed >>> 15, 1 | seed); x = x + Math.imul(x ^ x >>> 7, 61 | x) ^ x; return ((x ^ x >>> 14) >>> 0) / 4294967296; }; }
+const NAMES = ["Yassine Trabelsi", "Salma Jaziri", "Nour Hamdi", "Karim Mejri", "Ines Chaabane", "Rami Ferchichi", "Lina Gharsalli", "Omar Ayari", "Sarra Khemiri", "Hedi Zouari", "Meriem Toumi", "Aziz Ben Amor", "Rania Sassi", "Fares Dridi", "Emna Kchaou", "Walid Saidi", "Asma Belhadj", "Bilel Jlassi"];
+const CURE_TYPES = [["postop", "genou", "ortho"], ["postop", "epaule", "ortho"], ["postop", "hanche", "ortho"], ["dos", "lombaires", "rhumato"], ["dos", "cou", "gen"], ["dos", "lombaires", "gen"], ["sport", "cheville", "sport"], ["sport", "epaule", "sport"], ["sport", "coude", "sport"], ["resp", null, "pneumo"]];
+const NOTES = { fr: "Bonne progression. Reprise progressive de la marche sans appui.", ar: "تقدّم جيد. استئناف تدريجي للمشي دون إسناد." };
+function placeIn(appts, ds, sv, pref) {
+  const fs = freeSlotsIn(appts, ds, svc(sv).dur, true);
+  return fs.includes(pref) ? pref : fs.find(s => toMin(s) >= toMin(pref)) || fs[fs.length - 1] || null;
+}
+function seed() {
+  const R = rng(20261022), pick = a => a[Math.floor(R() * a.length)], now = new Date();
+  const appts = []; let n = 0;
+  const patients = NAMES.map((name, i) => ({
+    id: "p" + (i + 1), name, phone: pick(["20", "22", "24", "50", "52", "55", "92", "98"]) + " 000 " + String(100 + i * 37).slice(-3),
+    born: 1950 + Math.floor(R() * 55), created: ymd(addDays(now, -(10 + Math.floor(R() * 200)))), notes: i % 3 === 0 ? "@sample" : "", balance: R() < .3 ? pick([35, 45, 90]) : 0, cure: null
+  }));
+  const times = ["08:00", "08:30", "09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+  patients.slice(0, 16).forEach((p, i) => {
+    const [sv, zone, rx] = CURE_TYPES[i % CURE_TYPES.length];
+    const total = pick([10, 10, 15, 15, 20]), freq = R() < .55 ? 2 : 3, pref = pick(times);
+    p.cure = { svc: sv, zone, total, freq, rx, cnam: R() < .75 };
+    const start = addDays(now, -(4 + Math.floor(R() * 34)));
+    const gaps = freq === 3 ? [2, 2, 3] : [3, 4];
+    // a bilan opens every course of treatment
+    let d = new Date(start), k = 0, gi = 0, guard = 0;
+    const bd = ymd(addDays(start, -3)); const bt = placeIn(appts, bd, "bilan", pref);
+    if (bt && slotsFor(bd).length) appts.push({ id: "a" + (++n), patient: p.id, service: "bilan", date: bd, time: bt, status: "done", source: R() < .4 ? "online" : "cabinet", eva: null, zone, created: bd });
+    const e0 = 6 + Math.floor(R() * 4);
+    while (k < total && guard++ < 80) {
+      const ds = ymd(d);
+      if (d > addDays(now, 16)) break;
+      const tm = slotsFor(ds).length ? placeIn(appts, ds, sv, pref) : null;
+      if (!tm) { d = addDays(d, 1); continue; }
+      let status = "confirmed";
+      if (ds < TODAY || (ds === TODAY && toMin(tm) + svc(sv).dur <= nowMin())) status = R() < .07 ? "noshow" : "done";
+      const eva = status === "done" ? Math.max(0, Math.min(10, Math.round(e0 - (k / total) * (e0 - 1.5) * 1.15 + (R() - .5) * 1.6))) : null;
+      appts.push({ id: "a" + (++n), patient: p.id, service: sv, date: ds, time: tm, status, source: "cabinet", eva, zone, created: ds });
+      k++; d = addDays(d, gaps[gi++ % gaps.length]);
+    }
+  });
+  // two new patients waiting for their first bilan, plus one more online request
+  const req = [[16, "genou", 2, "yes"], [17, "lombaires", 4, "soon"], [5, null, 1, "yes"]];
+  req.forEach(([pi, zone, off, rx], j) => {
+    const ds = bookingDays(10).filter(x => x > TODAY)[off] || ymd(addDays(now, off + 1));
+    const sv = j === 2 ? "massage" : "bilan", tm = placeIn(appts, ds, sv, "10:00");
+    if (!tm) return;
+    patients[pi].created = ymd(addDays(now, -j));
+    appts.push({ id: "a" + (++n), patient: patients[pi].id, service: sv, date: ds, time: tm, status: "pending", source: "online", eva: null, zone, rx, created: ymd(addDays(now, -j)) });
+  });
+  return { patients, appts, seq: n, pseq: patients.length };
+}
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY)); } catch { S = null; }
+if (!S || !Array.isArray(S.appts)) S = seed();
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} };
+const patient = id => S.patients.find(p => p.id === id);
+const hue = name => { let h = 0; for (const c of name) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
+const initials = n => n.split(" ").map(w => w[0]).slice(0, 2).join("");
+const avatar = (name, cls = "av") => `<span class="${cls}" style="--h:${hue(name)}">${esc(initials(name))}</span>`;
+const money = v => `${v} ${t("dt")}`;
+const pill = st => `<span class="pill st-${st}">${esc(T[lang].st[st])}</span>`;
+// session number within a patient's course of the same treatment
+function sessionMap() {
+  const groups = {};
+  for (const a of S.appts) {
+    if (a.status === "cancelled" || a.status === "pending" || a.service === "bilan") continue;
+    (groups[a.patient + "|" + a.service] = groups[a.patient + "|" + a.service] || []).push(a);
+  }
+  const map = {};
+  for (const k in groups) {
+    const list = groups[k].sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+    const p = patient(list[0].patient), tot = p && p.cure && p.cure.svc === list[0].service ? Math.max(p.cure.total, list.length) : list.length;
+    list.forEach((a, i) => { map[a.id] = [i + 1, tot]; });
+  }
+  return map;
+}
+const doneCount = p => p.cure ? S.appts.filter(a => a.patient === p.id && a.service === p.cure.svc && a.status === "done").length : 0;
+
+/* ---------- UI state ---------- */
+const ui = { view: "site", tab: "dash", week: 0, sel: null, q: "", bk: { service: null, date: null, time: null, rx: null, zone: null, done: null }, zone: "genou", eva: 6, phase: reduced ? 3 : 0, guide: true, anim: true };
+try { const l = localStorage.getItem(KEY + "-lang"); if (l === "ar" || l === "fr") lang = l; if (localStorage.getItem(KEY + "-guide") === "0") ui.guide = false; } catch {}
+const SHOT = /[?&]shot\b/.test(location.search); // clean, still frame for the link-preview image
+if (SHOT) { ui.guide = false; ui.phase = 5; }
+const HASH_TABS = { cabinet: "dash", agenda: "agenda", patients: "patients", demandes: "requests" };
+const fromHash = () => { const h = location.hash.replace("#", ""); if (HASH_TABS[h]) { ui.view = "cabinet"; ui.tab = HASH_TABS[h]; return true; } if (h === "site") { ui.view = "site"; return true; } return false; };
+fromHash();
+addEventListener("hashchange", () => { if (fromHash()) { ui.anim = true; render(); window.scrollTo({ top: 0 }); } });
+
+function toast(msg) {
+  document.querySelectorAll(".toast").forEach(x => x.remove());
+  const el = document.createElement("div"); el.className = "toast"; el.setAttribute("role", "status");
+  el.innerHTML = icon("checkc", 18) + `<span>${esc(msg)}</span>`;
+  document.body.appendChild(el); setTimeout(() => el.remove(), 3400);
+}
+
+/* ---------- body map ---------- */
+function bodySvg({ sel = null, interactive = false, cls = "body" } = {}) {
+  let zones = "";
+  for (const k in ZONES) {
+    const z = ZONES[k], on = sel === k;
+    if (interactive) {
+      zones += `<g class="zone ${on ? "on" : ""}" data-act="zone" data-v="${k}" tabindex="0" role="button" aria-pressed="${on}" aria-label="${esc(zName(k))}">${z.pos.map(([x, y]) => `<circle class="halo" cx="${x}" cy="${y}" r="15"/><circle class="dot" cx="${x}" cy="${y}" r="7"/>`).join("")}</g>`;
+    } else if (on) {
+      zones += z.pos.map(([x, y]) => `<circle class="hl-halo" cx="${x}" cy="${y}" r="16"/><circle class="hl" cx="${x}" cy="${y}" r="8"/>`).join("");
+    }
+  }
+  return `<svg class="${cls}" viewBox="0 0 200 420" aria-hidden="${interactive ? "false" : "true"}" role="${interactive ? "group" : "img"}">
+    <circle class="fig" cx="100" cy="36" r="24"/><rect class="fig" x="91" y="54" width="18" height="22" rx="6"/>
+    <path class="fig" d="M68 80 Q100 70 132 80 Q142 84 142 96 L136 150 Q132 176 132 200 L134 238 Q100 252 66 238 L68 200 Q68 176 64 150 L58 96 Q58 84 68 80 Z"/>
+    <path class="limb" d="M62 92 L47 152 L41 212"/><path class="limb" d="M138 92 L153 152 L159 212"/>
+    <circle class="fig" cx="40" cy="224" r="9"/><circle class="fig" cx="160" cy="224" r="9"/>
+    <path class="limb leg" d="M84 238 L81 318 L80 386"/><path class="limb leg" d="M116 238 L119 318 L120 386"/>
+    <ellipse class="fig" cx="76" cy="400" rx="15" ry="7"/><ellipse class="fig" cx="124" cy="400" rx="15" ry="7"/>
+    ${zones}
+  </svg>`;
+}
+function painInfoHTML() {
+  const z = ZONES[ui.zone];
+  if (!z) return `<div class="zcard"><p class="muted">${t("pickZone")}</p></div>`;
+  const s = svc(z.svc), v = ui.eva;
+  return `<div class="zcard">
+    <div class="zhead"><span class="fi">${icon("pin", 22)}</span><div><b>${esc(zName(ui.zone))}</b><div class="muted" style="font-size:.86rem">${t("zCommon")} : ${esc(lang === "ar" ? z.par : z.pfr)}</div></div></div>
+    <div class="reco"><div><small>${t("zSvc")}</small><b>${esc(sName(s))}</b></div><div><small>${t("zSessions")}</small><b class="mono">${z.n} ${t("sessionsU")}</b></div></div>
+    <div><div class="eva-row"><b style="font-size:.92rem">${t("evaQ")}</b><span><span class="eva-val mono" id="evaVal">${v}</span><span class="muted mono">/10</span></span></div>
+      <input type="range" class="eva" id="evaRange" min="0" max="10" step="1" value="${v}" aria-label="${t("evaQ")}" dir="ltr">
+      <div class="eva-scale" dir="ltr"><span>0</span><span id="evaLbl" class="eva-lbl">${evaLabel(v)}</span><span>10</span></div></div>
+    <div class="alert" id="evaAlert" ${v >= 8 ? "" : "hidden"}>${icon("alert", 18)}<span>${t("evaAlert")}</span></div>
+    <div><button class="btn glow lg" data-act="book-bilan">${icon("cal", 18)} ${t("bookBilan")} · ${esc(zName(ui.zone))}</button></div>
+  </div>`;
+}
+function setZone(k) {
+  ui.zone = k;
+  document.querySelectorAll(".zone").forEach(g => { const on = g.dataset.v === k; g.classList.toggle("on", on); g.setAttribute("aria-pressed", on); });
+  document.querySelectorAll(".zone-chips .chip").forEach(c => c.setAttribute("aria-pressed", c.dataset.v === k));
+  $("#painInfo").innerHTML = painInfoHTML(); bindEva();
+}
+function bindEva() {
+  const r = $("#evaRange"); if (!r) return;
+  r.addEventListener("input", () => { ui.eva = Number(r.value); $("#evaVal").textContent = ui.eva; $("#evaLbl").textContent = evaLabel(ui.eva); $("#evaAlert").hidden = ui.eva < 8; });
+}
+
+/* ---------- patient site ---------- */
+function phoneMock() {
+  const days = bookingDays(5);
+  return `<div class="phone" id="phone"><div class="notch"></div><div class="screen">
+    <div class="pm-top"><span class="logo">${icon("pulse", 13, 2.4)}</span>${t("brand")}</div>
+    <div class="pm-h">${t("pmTitle")}</div>
+    <div class="pm-l">${t("pmSvc")}</div>
+    <div class="pm-chips">${["dos", "postop", "sport"].map((s, i) => `<span class="pm-chip ${i === 0 ? "pm-target-1" : ""}">${esc(sName(svc(s)))}</span>`).join("")}</div>
+    <div class="pm-l">${t("pmDay")}</div>
+    <div class="pm-days">${days.map((d, i) => { const x = parse(d); return `<span class="pm-day ${i === 1 ? "pm-target-2" : ""}"><small>${x.toLocaleDateString(loc(), { weekday: "short" })}</small><b>${x.getDate()}</b></span>`; }).join("")}</div>
+    <div class="pm-l">${t("pmTime")}</div>
+    <div class="pm-slots">${["08:30", "09:00", "10:30", "12:00", "17:00", "18:30"].map(s => `<span class="pm-slot ${s === "10:30" ? "pm-target-3" : ""} ${s === "09:00" || s === "17:00" ? "off" : ""}">${s}</span>`).join("")}</div>
+    <span class="pm-btn pm-target-4">${t("pmBtn")}</span>
+    <div class="pm-done">${checkSvg(58)}<b>${t("pmDone")}</b><span>${esc(sName(svc("dos")))} · ${fmtDay(days[1], { weekday: "long", day: "numeric", month: "long" })} · 10:30</span><small>${t("pmDoneSub")}</small></div>
+  </div></div>`;
+}
+function applyPhase() {
+  const ph = $("#phone"); if (!ph) return;
+  const p = ui.phase;
+  for (let k = 1; k <= 4; k++) { const el = ph.querySelector(".pm-target-" + k); if (!el) continue; el.classList.toggle("sel", p >= k); el.classList.toggle("tap", p === k); }
+  ph.classList.toggle("done", p >= 5);
+}
+function mapSvg() {
+  return `<svg viewBox="0 0 400 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <rect class="block" x="0" y="0" width="400" height="190"/>
+    <rect class="park" x="250" y="110" width="120" height="70" rx="10"/>
+    <g class="road" stroke-width="7" fill="none"><path d="M0 40 H400"/><path d="M0 150 H240"/><path d="M60 0 V190"/><path d="M180 0 V190"/><path d="M300 0 V100"/><path d="M0 0 L120 190"/></g>
+    <path class="avenue" d="M-10 98 H410" fill="none"/>
+    <text x="16" y="90">Av. Habib Bourguiba</text>
+  </svg><span class="pin">${icon("pin", 34, 2)}</span>`;
+}
+function bookingHTML() {
+  const bk = ui.bk, sv = bk.service && svc(bk.service);
+  if (bk.done) {
+    const d = bk.done;
+    return `<div class="book-main"><div class="success" role="status">${checkSvg(72)}<b>${t("sent")}</b><p class="muted">${t("sentSub")}</p>
+      <p><b>${esc(sName(svc(d.service)))}</b>${d.zone ? " · " + esc(zName(d.zone)) : ""} · ${fmtDay(d.date, { weekday: "long", day: "numeric", month: "long" })} · <span class="mono">${d.time}</span></p>
+      <div class="cta-row" style="justify-content:center;margin-top:8px"><button class="btn primary" data-act="go-requests">${t("seeOffice")} <span class="flip">${icon("arrow", 16)}</span></button><button class="btn" data-act="bk-reset">${t("again")}</button></div></div></div>${summaryHTML(d)}`;
+  }
+  const days = bookingDays();
+  const slots = sv && bk.date ? freeSlots(bk.date, sv.dur) : [];
+  const cur = !bk.service ? 1 : !bk.date ? 2 : !bk.time ? 3 : 4;
+  const st = n => (n < cur ? "ok" : n === cur ? "cur" : "");
+  const num = n => `<span class="num">${n < cur ? icon("check", 14, 3) : n}</span>`;
+  return `<div class="book-main"><div class="steps">
+    <div class="step ${st(1)}">${num(1)}<div class="step-b"><div class="step-t">${t("s1")}</div><div class="chips">${SERVICES.map(s => `<button class="chip" data-act="bk-svc" data-v="${s.id}" aria-pressed="${bk.service === s.id}">${icon(s.id, 16)}${esc(sName(s))}</button>`).join("")}</div></div></div>
+    <div class="step ${st(2)}">${num(2)}<div class="step-b"><div class="step-t">${t("s2")}</div>${sv ? `<div class="days">${days.map(d => { const x = parse(d); return `<button class="day" data-act="bk-day" data-v="${d}" aria-pressed="${bk.date === d}"><small>${x.toLocaleDateString(loc(), { weekday: "short" })}</small><span class="d">${x.getDate()}</span><small>${x.toLocaleDateString(loc(), { month: "short" })}</small></button>`; }).join("")}</div>` : `<span class="muted">${t("pickService")}</span>`}</div></div>
+    <div class="step ${st(3)}">${num(3)}<div class="step-b"><div class="step-t">${t("s3")}</div>${!sv || !bk.date ? `<span class="muted">${sv ? t("pickDay") : t("pickService")}</span>` : slots.length ? `<div class="slots">${slots.map(s => `<button class="chip" data-act="bk-time" data-v="${s}" aria-pressed="${bk.time === s}">${s}</button>`).join("")}</div>` : `<span class="muted">${t("noSlot")}</span>`}</div></div>
+    <div class="step ${st(4)}">${num(4)}<div class="step-b"><div class="step-t">${t("s4")}</div>
+      <form id="bkForm" novalidate style="display:grid;gap:12px">
+        <div class="fields"><label class="f" for="bkName">${t("name")}<input class="in" id="bkName" autocomplete="name" placeholder="Amel Ben Ali" value="${esc(bk.name || "")}"></label>
+        <label class="f" for="bkPhone">${t("phone")}<input class="in mono" id="bkPhone" inputmode="tel" autocomplete="tel" placeholder="98 123 456" value="${esc(bk.phone || "")}"></label></div>
+        <div style="display:grid;gap:6px"><span class="f" style="font-size:.8rem;font-weight:700;color:var(--muted)">${t("rxQ")}</span><div class="chips">${[["yes", "rxYes"], ["no", "rxNo"], ["soon", "rxSoon"]].map(([v, k]) => `<button type="button" class="chip" data-act="bk-rx" data-v="${v}" aria-pressed="${bk.rx === v}">${t(k)}</button>`).join("")}</div></div>
+        <p id="bkErr" class="err" hidden></p>
+        <div><button class="btn primary lg" type="submit" ${bk.time ? "" : "disabled"}>${t("confirm")} <span class="flip">${icon("arrow", 18)}</span></button></div>
+      </form></div></div>
+  </div></div>${summaryHTML(bk)}`;
+}
+const rxText = v => v ? t(v === "yes" ? "rxYes" : v === "no" ? "rxNo" : "rxSoon") : null;
+function summaryHTML(b) {
+  const sv = b.service && svc(b.service);
+  const row = (k, v) => `<div class="sum-row"><span>${k}</span>${v ? `<b>${v}</b>` : `<b class="empty">${t("notChosen")}</b>`}</div>`;
+  return `<aside class="book-side"><h3 style="font-size:1.15rem">${t("sumTitle")}</h3><div>
+    ${row(t("sumSvc"), sv && esc(sName(sv)))}${b.zone ? row(t("sumZone"), esc(zName(b.zone))) : ""}${row(t("sumDate"), b.date && fmtDay(b.date, { weekday: "long", day: "numeric", month: "long" }))}${row(t("sumTime"), b.time && `<span class="mono">${b.time}</span>`)}${row(t("sumRx"), rxText(b.rx))}</div>
+    <div class="sum-total"><span style="color:var(--on-navy-muted)">${t("sumPrice")}</span><b class="mono">${sv ? money(sv.price) : "—"}</b></div>
+    <p class="sum-note">${icon("wa", 18)}<span>${t("sumNote")}</span></p></aside>`;
+}
+function renderSite() {
+  const os = openStatus(), anim = ui.anim ? " reveal" : "", wd = new Date().getDay();
+  const tmr = bookingDays(5)[1];
+  const hourRows = [1, 2, 3, 4, 5, 6, 0].map(d => `<tr class="${d === wd ? "today" : ""}"><td>${T[lang].days[d]}</td><td class="mono">${d === 0 ? t("closed") : d === 6 ? "08:00 – 13:00" : "08:00–13:00 · 14:00–19:00"}</td></tr>`).join("");
+  const faq = [1, 2, 3, 4].map(n => `<details ${n === 1 ? "open" : ""}><summary>${t("q" + n)}<span class="pm">${icon("plus", 16, 2.2)}</span></summary><p>${t("a" + n)}</p></details>`).join("");
+  const spark = [8, 8, 7, 6, 5, 3].map((v, i) => `${8 + i * 36},${4 + (10 - v) * 2.6}`).join(" ");
+  return `
+  <section class="hero"><div class="gridbg"></div><div class="wrap">
+    <div class="${anim}" style="min-width:0">
+      <span class="eyebrow"><i></i>${t("eyebrow")}</span>
+      <h1>${t("heroTitle")}</h1>
+      <p class="lead">${t("heroLead")}</p>
+      <div class="cta-row"><a class="btn glow lg" href="#reserver" data-act="scroll" data-v="reserver">${icon("cal", 18)} ${t("bookNow")}</a><a class="btn glass lg" href="#douleur" data-act="scroll" data-v="douleur">${icon("person", 18)} ${t("seePain")}</a></div>
+      <div class="trust"><span><i class="live ${os.open ? "" : "off"}"></i><b>${os.text}</b></span><span>${icon("shield", 16)}${t("cnam")}</span><span>${icon("globe", 16)}${t("langs")}</span></div>
+    </div>
+    <div class="stage${anim}">
+      <div class="phone-wrap">${phoneMock()}</div>
+      <div class="float fa"><div class="r"><span class="gi ok">${icon("check", 17, 2.6)}</span><b>${t("fConfirmed")}</b></div><span class="sub">${fmtDay(tmr, { weekday: "short", day: "numeric", month: "short" })} · <span class="mono">10:30</span> · ${esc(sName(svc("dos")))}</span></div>
+      <div class="float fb"><div class="r"><span class="gi wa">${icon("wa", 17)}</span><b>${t("fReminder")}</b></div><div class="bubble">${t("fBubble")}</div></div>
+      <div class="float fc"><div class="r"><span class="gi coral">${icon("trend", 17)}</span><div><b class="mono">8 → 3</b><div class="sub">${t("fEva")}</div></div></div><svg class="spk" viewBox="0 0 196 34" preserveAspectRatio="none" aria-hidden="true"><polyline points="${spark}" fill="none" stroke="#FFB48A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+  </div></section>
+  <div class="band"><div class="wrap"><div class="band-card">
+    ${[["clock", "b1", ""], ["wa", "b2", "k"], ["trend", "b3", "c"], ["globe", "b4", "a"]].map(([ic, k, c]) => `<div class="feat"><span class="fi ${c}">${icon(ic, 22)}</span><div><b>${t(k)}</b><span>${t(k + "s")}</span></div></div>`).join("")}
+  </div></div></div>
+  <section class="sec" id="soins"><div class="wrap">
+    <div class="sec-head"><div><span class="kicker">${t("kSoins")}</span><h2 class="h-sec">${t("servicesTitle")}</h2></div><p class="muted">${t("servicesSub")}</p></div>
+    <div class="services">${SERVICES.map(s => `<button class="svc" data-act="pick-svc" data-v="${s.id}" style="--h:${s.h}"><span class="si">${icon(s.id, 24)}</span><h3>${esc(sName(s))}</h3><p>${esc(lang === "ar" ? s.dar : s.dfr)}</p><div class="meta"><span>${t("from")} <span class="price mono">${money(s.price)}</span> <span class="mono">${t("perSession")}</span></span><span class="go">${t("bookThis")} <span class="flip">${icon("arrow", 14, 2.2)}</span></span></div></button>`).join("")}</div>
+  </div></section>
+  <section class="sec alt" id="douleur"><div class="wrap pain-grid">
+    <div class="body-card">${bodySvg({ sel: ui.zone, interactive: true })}
+      <div class="zone-chips">${Object.keys(ZONES).map(k => `<button class="chip" data-act="zone" data-v="${k}" aria-pressed="${ui.zone === k}">${esc(zName(k))}</button>`).join("")}</div></div>
+    <div class="pain-info"><div class="pain-head"><span class="kicker">${t("painEyebrow")}</span><h2 class="h-sec">${t("painTitle")}</h2><p class="muted" style="margin-top:12px;max-width:50ch">${t("painLead")}</p></div><div id="painInfo">${painInfoHTML()}</div></div>
+  </div></section>
+  <section class="sec" id="cabinet"><div class="wrap">
+    <div class="sec-head"><div><span class="kicker">${t("cabEyebrow")}</span><h2 class="h-sec">${t("cabTitle")}</h2></div></div>
+    <div class="cab-grid">
+      <div class="card dr"><div class="dr-photo">${icon("person", 46, 1.6)}</div><div style="display:grid;gap:8px;min-width:0"><h3>${t("drName")}</h3><span class="muted" style="font-weight:600">${t("drRole")}</span><p class="muted">${t("drBio")}</p></div>
+        <div class="perks">${[["shield", "perk1"], ["wave", "perk2"], ["home", "perk3"], ["access", "perk4"]].map(([ic, k]) => `<span class="perk">${icon(ic, 17)}${t(k)}</span>`).join("")}</div></div>
+      <div class="side-stack">
+        <div class="card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><h3>${t("hours")}</h3><span class="status ${os.open ? "" : "off"}"><i></i>${os.text}</span></div><table class="hours">${hourRows}</table></div>
+        <div class="card"><h3>${t("where")}</h3><p class="muted" style="font-size:.88rem;margin-top:4px">${t("addr")} · ${t("addrNote")}</p><div class="map">${mapSvg()}</div></div>
+      </div>
+    </div>
+  </div></section>
+  <section class="sec alt" id="reserver"><div class="wrap">
+    <div class="sec-head"><div><span class="kicker">${t("bookEyebrow")}</span><h2 class="h-sec">${t("bookTitle")}</h2></div></div>
+    <div class="book" id="bookCard">${bookingHTML()}</div>
+  </div></section>
+  <section class="sec" id="faq"><div class="wrap faq-grid">
+    <div><span class="kicker">${t("faqEyebrow")}</span><h2 class="h-sec">${t("faqTitle")}</h2><p class="muted" style="margin:14px 0 20px">${t("faqSub")}</p><span class="btn mono">${icon("phone", 16)} +216 70 000 000</span></div>
+    <div class="faq">${faq}</div>
+  </div></section>
+  <footer class="foot"><div class="wrap">
+    <div><div class="brand"><span class="logo">${icon("pulse", 18, 2.2)}</span>${t("brand")}</div><p>${t("footAbout")}</p></div>
+    <div><b>${t("footContact")}</b><p class="mono">+216 70 000 000</p><p>${t("addr")}</p></div>
+    <div><b>${t("footHours")}</b><p>${t("footHoursTxt")}</p></div>
+    <p class="credit">${icon("code", 16)}<span>${t("credit")}</span></p>
+  </div></footer>
+  ${ui.guide ? `<div class="guide" role="note"><p><span class="long">${t("guide")}</span><span class="short">${t("guideShort")}</span></p><button class="btn primary sm" data-act="view" data-v="cabinet">${t("guideBtn")} <span class="flip">${icon("arrow", 14, 2.2)}</span></button><button class="x" data-act="guide-x" aria-label="${t("close")}">${icon("x", 16)}</button></div>` : ""}`;
+}
+
+/* ---------- back office ---------- */
+const TABS = [["dash", "home"], ["agenda", "cal"], ["patients", "users"], ["requests", "inbox"]];
+function renderOffice() {
+  const pending = S.appts.filter(a => a.status === "pending").length;
+  const body = ui.tab === "agenda" ? renderAgenda() : ui.tab === "patients" ? renderPatients() : ui.tab === "requests" ? renderRequests() : renderDash();
+  return `<div class="app">
+    <aside class="side"><div class="lbl">${t("menu")}</div>
+      ${TABS.map(([k, ic]) => `<button class="nav-b" data-act="tab" data-v="${k}" ${ui.tab === k ? 'aria-current="page"' : ""}>${icon(ic, 19)}${t(k)}${k === "requests" && pending ? `<span class="badge">${pending}</span>` : ""}</button>`).join("")}
+      <div class="me"><span class="av">${icon("person", 20, 2)}</span><div><b>${t("drName")}</b><span>${t("drRole")}</span></div></div>
+      <div class="side-note"><span>${t("railNote")}</span><button data-act="reset">${t("reset")}</button><span>${t("credit")}</span></div>
+    </aside>
+    <div class="main${ui.anim ? " reveal" : ""}">${body}</div>
+  </div>
+  <nav class="tabbar">${TABS.map(([k, ic]) => `<button data-act="tab" data-v="${k}" ${ui.tab === k ? 'aria-current="page"' : ""}>${icon(ic, 21)}${t(k)}${k === "requests" && pending ? `<span class="badge">${pending}</span>` : ""}</button>`).join("")}</nav>`;
+}
+function lastOpenDays(n) { const out = []; let d = new Date(); while (out.length < n) { const s = ymd(d); if (slotsFor(s).length) out.unshift(s); d = addDays(d, -1); } return out; }
+function bars(vals) { const mx = Math.max(1, ...vals); return `<div class="bars">${vals.map((v, i) => `<i class="${i === vals.length - 1 ? "hi" : ""}" style="height:${Math.max(6, v / mx * 100)}%"></i>`).join("")}</div>`; }
+const sessTag = (a, sm) => a.service === "bilan" ? `<span class="sn">${t("bilan")}</span>` : sm[a.id] ? `<span class="sn">${t("sessionShort")} ${sm[a.id][0]}/${sm[a.id][1]}</span>` : "";
+function renderDash() {
+  const live = S.appts.filter(a => a.status !== "cancelled");
+  const list = live.filter(a => a.date === TODAY).sort((a, b) => a.time.localeCompare(b.time));
+  const done = list.filter(a => a.status === "done");
+  const pendingL = S.appts.filter(a => a.status === "pending").sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+  const cures = S.patients.filter(p => p.cure && doneCount(p) < p.cure.total);
+  const month = TODAY.slice(0, 7);
+  const finished = S.patients.filter(p => { if (!p.cure || doneCount(p) < p.cure.total) return false; const last = S.appts.filter(a => a.patient === p.id && a.status === "done").map(a => a.date).sort().pop(); return last && last.startsWith(month); }).length;
+  const revenue = done.reduce((s, a) => s + svc(a.service).price, 0);
+  const days7 = lastOpenDays(7);
+  const cnt7 = days7.map(d => live.filter(a => a.date === d).length);
+  const rev7 = days7.map(d => live.filter(a => a.date === d && a.status === "done").reduce((s, a) => s + svc(a.service).price, 0));
+  const nm = nowMin(), sm = sessionMap();
+  const tl = list.length ? list.map(a => {
+    const p = patient(a.patient), sv = svc(a.service);
+    const isNow = a.status === "confirmed" && toMin(a.time) <= nm && nm < toMin(a.time) + sv.dur;
+    return `<div class="tl-item ${isNow ? "now" : a.status}"><span class="tl-time">${a.time}</span><span class="tl-rail"><span class="tl-dot"></span></span>
+      <div class="tl-card">${avatar(p.name)}<div class="who"><b>${esc(p.name)}</b><span>${esc(sName(sv))}${a.zone ? " · " + esc(zName(a.zone)) : ""} ${sessTag(a, sm)}</span></div>
+      <div class="acts">${isNow ? `<span class="now-tag">${t("inProgress")}</span>` : ""}${a.status === "confirmed" ? `<button class="btn sm ok" data-act="set-st" data-id="${a.id}" data-v="done">${icon("check", 14, 2.6)} ${t("arrived")}</button><button class="btn sm bad" data-act="set-st" data-id="${a.id}" data-v="noshow">${t("absent")}</button>` : pill(a.status)}</div></div></div>`;
+  }).join("") : `<div class="empty">${t("noAppt")}</div>`;
+  const cureRows = cures.map(p => [p, doneCount(p)]).sort((a, b) => b[1] / b[0].cure.total - a[1] / a[0].cure.total).slice(0, 5).map(([p, d]) => `<button class="cure-row" data-act="open-file" data-v="${p.id}" style="border:0;border-top:1px solid var(--line);background:none;text-align:start;width:100%;cursor:pointer"><div class="top-r">${avatar(p.name)}<div class="who"><b>${esc(p.name)}</b><span>${esc(sName(svc(p.cure.svc)))}${p.cure.zone ? " · " + esc(zName(p.cure.zone)) : ""}</span></div><span class="mono" style="font-weight:700">${d}/${p.cure.total}</span></div><div class="prog"><i style="width:${Math.round(d / p.cure.total * 100)}%"></i></div></button>`).join("");
+  const since = ymd(addDays(new Date(), -30));
+  const att = live.filter(a => a.date >= since && a.date <= TODAY && (a.status === "done" || a.status === "noshow"));
+  const pres = att.filter(a => a.status === "done").length, abs = att.length - pres, pct = att.length ? Math.round(pres / att.length * 100) : 100;
+  const reqs = pendingL.slice(0, 3).map(a => { const p = patient(a.patient); return `<div class="req">${avatar(p.name)}<div class="who"><b>${esc(p.name)}</b><span>${esc(sName(svc(a.service)))}${a.zone ? " · " + esc(zName(a.zone)) : ""} · ${fmtDay(a.date)} · <span class="mono">${a.time}</span></span></div><button class="btn sm primary" data-act="accept" data-id="${a.id}">${t("accept")}</button></div>`; }).join("") || `<div class="empty" style="padding:14px">${t("reqEmpty")}</div>`;
+  return `<div class="main-head"><div><h2>${t("hello")}</h2><span class="muted" style="text-transform:capitalize">${fmtDay(TODAY, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span></div>
+      <div class="acts"><button class="btn" data-act="remind">${icon("wa", 17)} ${t("remind")}</button><button class="btn primary" data-act="new-appt">${icon("plus", 17, 2.2)} ${t("newAppt")}</button></div></div>
+    <div class="kpis">
+      <div class="kpi"><div class="top-r"><span class="k">${t("kToday")}</span><span class="ki">${icon("cal", 18)}</span></div><div class="v" data-count="${list.length}">${list.length}</div><div class="s">${t("kTodayS", { n: done.length })}</div>${bars(cnt7)}</div>
+      <div class="kpi warn"><div class="top-r"><span class="k">${t("kPending")}</span><span class="ki">${icon("inbox", 18)}</span></div><div class="v" data-count="${pendingL.length}">${pendingL.length}</div><div class="s">${t("kPendingS")}</div><button class="linkish" style="justify-self:start;margin-top:auto;font-size:.82rem" data-act="tab" data-v="requests">${t("seeAll")}</button></div>
+      <div class="kpi c"><div class="top-r"><span class="k">${t("kCures")}</span><span class="ki">${icon("trend", 18)}</span></div><div class="v" data-count="${cures.length}">${cures.length}</div><div class="s">${t("kCuresS", { n: finished })}</div></div>
+      <div class="kpi aq"><div class="top-r"><span class="k">${t("kRevenue")}</span><span class="ki">${icon("money", 18)}</span></div><div class="v"><span data-count="${revenue}">${revenue}</span><small>${t("dt")}</small></div><div class="s">${t("kRevenueS")}</div>${bars(rev7)}</div>
+    </div>
+    <div class="dash">
+      <div class="panel"><div class="panel-h"><h3>${t("program")}</h3><span class="muted mono" style="font-size:.82rem">${list.length} ${t("total")}</span></div><div class="panel-b"><div class="tl">${tl}</div></div></div>
+      <div class="col">
+        <div class="panel"><div class="panel-h"><h3>${t("reqTitle")}</h3>${pendingL.length ? `<span class="badge" style="margin:0">${pendingL.length}</span>` : ""}</div><div class="panel-b">${reqs}</div></div>
+        <div class="panel"><div class="panel-h"><h3>${t("curesTitle")}</h3><span class="muted mono" style="font-size:.82rem">${cures.length}</span></div><div class="panel-b">${cureRows}</div></div>
+        <div class="panel"><div class="panel-h"><h3>${t("attendance")}</h3></div><div class="panel-b"><span class="big-pct mono">${pct}%</span><div class="meter"><i style="width:${pct}%"></i></div><span class="muted" style="font-size:.82rem">${t("attendanceS", { a: pres, b: abs })}</span></div></div>
+      </div>
+    </div>`;
+}
+function weekStart(off) { const d = new Date(); const wd = (d.getDay() + 6) % 7; return addDays(d, -wd + off * 7); }
+function renderAgenda() {
+  const start = weekStart(ui.week), days = [0, 1, 2, 3, 4, 5].map(i => ymd(addDays(start, i))), sm = sessionMap();
+  let cells = `<div class="h"></div>` + days.map(d => `<div class="h ${d === TODAY ? "today" : ""}">${parse(d).toLocaleDateString(loc(), { weekday: "short" })}<b>${parse(d).getDate()}</b></div>`).join("");
+  ALL_ROWS.forEach((r, ri) => {
+    cells += `<div class="t" style="grid-row:${ri + 2};grid-column:1">${r.endsWith(":00") ? r : ""}</div>`;
+    days.forEach((d, di) => {
+      const open = slotsFor(d).includes(r);
+      cells += `<button class="c ${open ? "" : "closed"} ${r.endsWith(":30") ? "half" : ""}" style="grid-row:${ri + 2};grid-column:${di + 2}" data-d="${d}" data-t="${r}" ${open ? `data-act="new-appt" aria-label="${fmtDay(d)} ${r}"` : 'tabindex="-1" aria-hidden="true"'}></button>`;
+    });
+  });
+  for (const a of S.appts.filter(a => days.includes(a.date) && a.status !== "cancelled")) {
+    const ri = ALL_ROWS.indexOf(a.time), di = days.indexOf(a.date); if (ri < 0) continue;
+    const sv = svc(a.service), tag = a.service === "bilan" ? t("bilan") : sm[a.id] ? `${sm[a.id][0]}/${sm[a.id][1]}` : "";
+    cells += `<button class="appt s-${a.status}" style="grid-row:${ri + 2} / span ${sv.dur / 30};grid-column:${di + 2}" data-act="open-appt" data-id="${a.id}"><b>${esc(patient(a.patient).name)}</b><span>${a.time} · ${tag ? tag + " · " : ""}${esc(sName(sv))}</span></button>`;
+  }
+  const R = lang === "ar";
+  return `<div class="main-head"><div><h2>${t("agenda")}</h2><span class="muted">${t("week", { d: fmtDay(days[0], { day: "numeric", month: "long" }) })}</span></div>
+    <div class="acts"><button class="btn sm" data-act="week" data-v="-1" aria-label="${t("prev")}">${icon(R ? "chevR" : "chevL", 16, 2.2)}</button><button class="btn sm" data-act="week" data-v="0">${t("thisWeek")}</button><button class="btn sm" data-act="week" data-v="1" aria-label="${t("next")}">${icon(R ? "chevL" : "chevR", 16, 2.2)}</button><button class="btn sm primary" data-act="new-appt">${icon("plus", 15, 2.2)} ${t("newAppt")}</button></div></div>
+    <div class="legend"><span><span class="sw" style="background:var(--brand)"></span>${t("legConfirmed")}</span><span><span class="sw" style="background:var(--warn)"></span>${t("legPending")}</span><span><span class="sw" style="background:var(--ok)"></span>${t("legDone")}</span><span><span class="sw" style="background:var(--bad)"></span>${t("legNoshow")}</span><span>· ${t("clickSlot")}</span></div>
+    <div class="agenda-scroll"><div class="agenda" id="agendaGrid">${cells}</div></div>`;
+}
+function placeNowLine() {
+  const g = $("#agendaGrid"); if (!g) return;
+  const m = nowMin(); if (m < 480 || m >= 1140) return;
+  const slot = toHM(Math.floor(m / 30) * 30), cell = g.querySelector(`.c[data-d="${TODAY}"][data-t="${slot}"]`); if (!cell) return;
+  const line = document.createElement("div"); line.className = "nowline";
+  line.style.top = (cell.offsetTop + (m % 30) / 30 * cell.offsetHeight) + "px"; line.style.left = cell.offsetLeft + "px"; line.style.width = cell.offsetWidth + "px";
+  g.appendChild(line);
+}
+function renderPatients() {
+  const q = ui.q.trim().toLowerCase();
+  const list = S.patients.filter(p => !q || p.name.toLowerCase().includes(q) || p.phone.replace(/\s/g, "").includes(q.replace(/\s/g, ""))).sort((a, b) => b.created.localeCompare(a.created));
+  if (!ui.sel || !patient(ui.sel)) ui.sel = (list.find(p => p.cure) || list[0] || S.patients[0]).id;
+  const items = list.map(p => { const d = doneCount(p); return `<button class="pt-item" data-act="sel-pt" data-v="${p.id}" aria-current="${ui.sel === p.id}">${avatar(p.name)}<span class="nm"><b>${esc(p.name)}</b><span>${p.cure ? esc(sName(svc(p.cure.svc))) : `<span class="mono">${esc(p.phone)}</span>`}</span></span>${p.cure ? `<span class="sn">${d}/${p.cure.total}</span>` : ""}</button>`; }).join("") || `<div class="empty">—</div>`;
+  return `<div class="main-head"><div><h2>${t("patients")}</h2><span class="muted">${S.patients.length} ${t("patients").toLowerCase()}</span></div><div class="acts"><button class="btn primary" data-act="new-pt">${icon("plus", 17, 2.2)} ${t("newPatient")}</button></div></div>
+    <div class="pt-grid">
+      <div style="display:grid;gap:10px;min-width:0"><div class="search">${icon("search", 17)}<input class="in" id="ptSearch" type="search" placeholder="${t("search")}" value="${esc(ui.q)}" aria-label="${t("search")}"></div><div class="panel pt-list">${items}</div></div>
+      <div class="panel pt-file">${renderFile(patient(ui.sel))}</div>
+    </div>`;
+}
+function evaChart(vals) {
+  if (vals.length < 2) return `<p class="muted" style="font-size:.86rem">${t("evaNone")}</p>`;
+  const W = 240, H = 120, px = 22, py = 14, step = (W - px - 10) / (vals.length - 1), y = v => py + (10 - v) / 10 * (H - py * 2);
+  const pts = vals.map((v, i) => [px + i * step, y(v)]);
+  const line = pts.map(p => p.join(",")).join(" ");
+  const area = `M${pts[0][0]},${H - py} L${pts.map(p => p.join(",")).join(" L")} L${pts[pts.length - 1][0]},${H - py} Z`;
+  const last = pts[pts.length - 1];
+  return `<svg class="chart-eva" viewBox="0 0 ${W} ${H}" role="img" aria-label="${t("evaChart")}" dir="ltr">
+    ${[0, 5, 10].map(v => `<line x1="${px}" x2="${W - 6}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-dasharray="3 3"/><text x="${px - 6}" y="${y(v) + 3}" text-anchor="end">${v}</text>`).join("")}
+    <path d="${area}" fill="var(--coral)" opacity=".12"/>
+    <polyline class="line" points="${line}" fill="none" stroke="var(--coral)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+    ${pts.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="2.6" fill="var(--surface)" stroke="var(--coral)" stroke-width="1.8"/>`).join("")}
+    <circle cx="${last[0]}" cy="${last[1]}" r="5" fill="var(--coral)"/><text x="${last[0] - 8}" y="${last[1] - 9}" text-anchor="end" style="font-weight:700;fill:var(--ink);font-size:12px">${vals[vals.length - 1]}</text>
+  </svg>`;
+}
+function renderFile(p) {
+  const ap = S.appts.filter(a => a.patient === p.id && a.status !== "cancelled").sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
+  const past = ap.filter(a => a.status === "done");
+  const next = ap.filter(a => a.date >= TODAY && (a.status === "confirmed" || a.status === "pending")).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))[0];
+  const sm = sessionMap(), notes = p.notes === "@sample" ? NOTES[lang] : p.notes;
+  let cure;
+  if (p.cure) {
+    const c = p.cure, d = doneCount(p), evas = S.appts.filter(a => a.patient === p.id && a.service === c.svc && a.status === "done" && a.eva != null).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time)).map(a => a.eva);
+    const exKey = c.zone || (c.svc === "resp" ? "resp" : "lombaires"), li = lang === "ar" ? 1 : 0;
+    cure = `<div class="cure">
+      <div class="cure-h"><div><span class="kicker" style="margin-bottom:6px">${t(d >= c.total ? "cureDone" : "cureNow")}</span><br><b>${esc(sName(svc(c.svc)))}${c.zone ? " · " + esc(zName(c.zone)) : ""}</b><div class="muted" style="font-size:.84rem;margin-top:4px">${t("rxBy", { r: RX[c.rx][li] })} · ${t("freqTxt", { f: c.freq })}</div></div><span class="cure-n mono">${d}<small>/${c.total}</small></span></div>
+      <div class="prog"><i style="width:${Math.min(100, Math.round(d / c.total * 100))}%"></i></div>
+      <div class="cure-grid">${bodySvg({ sel: c.zone })}<div style="display:grid;gap:6px;min-width:0"><b style="font-size:.86rem">${t("evaChart")}</b>${evaChart(evas)}</div></div>
+      <div class="ex"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><b style="font-size:.92rem">${t("exTitle")}</b><button class="btn sm" data-act="send-ex">${icon("wa", 15)} ${t("exSend")}</button></div>
+        ${EX[exKey].map(e => `<div class="ex-item"><span class="ex-i">${icon("person", 16)}</span><b>${esc(e[li])}</b><span>${esc(e[2])}</span></div>`).join("")}</div>
+    </div>`;
+  } else {
+    cure = `<div class="cure"><p class="muted">${t("noCure")}</p><div><button class="btn primary sm" data-act="new-series" data-v="${p.id}">${icon("plus", 15, 2.2)} ${t("planSeries")}</button></div></div>`;
+  }
+  const hist = past.length ? `<div class="tbl-scroll"><table class="hist"><thead><tr><th>${t("hDate")}</th><th>${t("hNo")}</th><th>${t("hAct")}</th><th>${t("hEva")}</th><th style="text-align:end">${t("hPrice")}</th></tr></thead><tbody>${past.slice(0, 8).map(a => `<tr><td class="mono">${fmtDay(a.date, { day: "numeric", month: "short" })}</td><td class="mono">${a.service === "bilan" ? t("bilan") : sm[a.id] ? sm[a.id][0] + "/" + sm[a.id][1] : "—"}</td><td>${esc(sName(svc(a.service)))}</td><td class="mono">${a.eva != null ? a.eva : "—"}</td><td class="num">${money(svc(a.service).price)}</td></tr>`).join("")}</tbody></table></div>` : `<p class="muted">${t("noHist")}</p>`;
+  return `<div class="pt-top">${avatar(p.name)}<div class="pt-id" style="min-width:0;flex:1"><h2>${esc(p.name)}</h2><span class="mono muted" style="white-space:nowrap">+216 ${esc(p.phone)}</span></div><button class="btn sm primary" data-act="new-series" data-v="${p.id}">${icon("plus", 15, 2.2)} ${t("newAppt")}</button></div>
+    <dl class="dl">
+      <div><dt>${t("age")}</dt><dd>${new Date().getFullYear() - p.born} ${t("years")}</dd></div>
+      <div><dt>${t("cnamCover")}</dt><dd style="color:${p.cure && p.cure.cnam ? "var(--ok)" : "var(--warn)"}">${p.cure ? t(p.cure.cnam ? "cnamOk" : "cnamWait") : t("none")}</dd></div>
+      <div><dt>${t("nextVisit")}</dt><dd class="mono">${next ? fmtDay(next.date, { day: "numeric", month: "short" }) + " · " + next.time : t("none")}</dd></div>
+      <div><dt>${t("balance")}</dt><dd class="mono" style="color:${p.balance ? "var(--bad)" : "inherit"}">${money(p.balance || 0)}</dd></div>
+    </dl>
+    ${cure}
+    <div style="display:grid;gap:8px"><h3>${t("history")}</h3>${hist}</div>
+    <div style="display:grid;gap:8px"><label for="ptNotes"><h3>${t("notes")}</h3></label><textarea class="in" id="ptNotes">${esc(notes)}</textarea><div><button class="btn sm" data-act="save-notes" data-v="${p.id}">${t("saveNotes")}</button></div></div>`;
+}
+function renderRequests() {
+  const list = S.appts.filter(a => a.status === "pending").sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+  const rows = list.length ? list.map(a => { const p = patient(a.patient), sv = svc(a.service), x = parse(a.date); return `<div class="req-card"><div class="req-when"><small>${x.toLocaleDateString(loc(), { weekday: "short" })}</small><b>${x.getDate()}</b><small class="mono">${a.time}</small></div>
+    ${avatar(p.name)}<div class="who"><b>${esc(p.name)} <span class="mono muted" style="font-weight:500;font-size:.82rem">· ${esc(p.phone)}</span></b><span>${esc(sName(sv))}${a.zone ? " · " + esc(zName(a.zone)) : ""} · <span class="src">${t("online")}</span>${a.rx ? ` · ${t("rxLabel")} : ${rxText(a.rx)}` : ""} · ${t("received", { d: a.created === TODAY ? t("todayW") : fmtDay(a.created) })}</span></div>
+    <div class="acts"><button class="btn sm primary" data-act="accept" data-id="${a.id}">${icon("check", 14, 2.6)} ${t("accept")}</button><button class="btn sm bad" data-act="refuse" data-id="${a.id}">${t("refuse")}</button></div></div>`; }).join("") : `<div class="empty">${t("reqEmpty")}</div>`;
+  return `<div class="main-head"><div><h2>${t("reqTitle")}</h2><span class="muted">${list.length} · ${T[lang].st.pending.toLowerCase()}</span></div></div><div class="panel">${rows}</div>`;
+}
+
+/* ---------- modals ---------- */
+function modal(html) { $("#layer").innerHTML = `<div class="overlay" data-act="close-bg"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`; const f = $("#layer .modal select, #layer .modal input"); f && f.focus(); }
+const closeModal = () => { $("#layer").innerHTML = ""; };
+function newApptModal(date, time, pid, count) {
+  const p = pid && patient(pid);
+  const opts = S.patients.slice().sort((a, b) => a.name.localeCompare(b.name)).map(x => `<option value="${x.id}" ${x.id === pid ? "selected" : ""}>${esc(x.name)}</option>`).join("");
+  const dates = bookingDays();
+  if (date && !dates.includes(date)) dates.unshift(date);
+  const defSvc = p && p.cure ? p.cure.svc : "dos", defCount = count || (p && p.cure ? 1 : 10);
+  modal(`<h2>${t("mNew")}</h2>
+    <label class="f" for="mPt">${t("mPatient")}<select class="in" id="mPt"><option value="">${t("mExisting")}</option>${opts}</select></label>
+    <div class="muted" style="font-size:.82rem">${t("mOrNew")}</div>
+    <div class="fields"><label class="f" for="mName">${t("name")}<input class="in" id="mName"></label><label class="f" for="mPhone">${t("phone")}<input class="in mono" id="mPhone" inputmode="tel"></label></div>
+    <label class="f" for="mSvc">${t("mService")}<select class="in" id="mSvc">${SERVICES.map(s => `<option value="${s.id}" ${s.id === defSvc ? "selected" : ""}>${esc(sName(s))} · ${s.dur} ${t("min")}</option>`).join("")}</select></label>
+    <div class="fields"><label class="f" for="mDate">${t("hDate")}<select class="in" id="mDate">${dates.map(d => `<option value="${d}" ${d === date ? "selected" : ""}>${fmtDay(d)}</option>`).join("")}</select></label>
+    <label class="f" for="mTime">${t("mTime")}<select class="in mono" id="mTime"></select></label></div>
+    <div class="series"><b>${icon("trend", 15)} ${t("mSeries")}</b><div class="fields">
+      <label class="f" for="mCount">${t("mCount")}<select class="in" id="mCount">${[1, 5, 10, 15, 20].map(n => `<option value="${n}" ${n === defCount ? "selected" : ""}>${n === 1 ? t("one") : n + " " + t("total")}</option>`).join("")}</select></label>
+      <label class="f" for="mFreq">${t("mFreq")}<select class="in" id="mFreq">${[2, 3].map(n => `<option value="${n}">${t("perWeek", { n })}</option>`).join("")}</select></label></div></div>
+    <p id="mErr" class="err" hidden></p>
+    <div class="modal-actions"><button class="btn" data-act="close">${t("mCancel")}</button><button class="btn primary" data-act="save-appt">${t("mSave")}</button></div>`);
+  const fill = () => { const fs = freeSlots($("#mDate").value, svc($("#mSvc").value).dur); $("#mTime").innerHTML = fs.map(s => `<option ${s === time ? "selected" : ""}>${s}</option>`).join("") || `<option value="">—</option>`; };
+  $("#mDate").onchange = fill; $("#mSvc").onchange = fill; fill();
+}
+function scheduleSeries(pid, sv, startDate, time, count, freq) {
+  const gaps = freq === 3 ? [2, 2, 3] : [3, 4], made = [];
+  let d = parse(startDate), gi = 0, guard = 0;
+  while (made.length < count && guard++ < 200) {
+    const ds = ymd(d), fs = slotsFor(ds).length ? freeSlots(ds, svc(sv).dur) : [];
+    const tm = fs.includes(time) ? time : fs.find(s => toMin(s) >= toMin(time)) || fs[0];
+    if (!tm) { d = addDays(d, 1); continue; }
+    const a = { id: "a" + (++S.seq), patient: pid, service: sv, date: ds, time: tm, status: "confirmed", source: "cabinet", eva: null, zone: null, created: TODAY };
+    S.appts.push(a); made.push(a);
+    d = addDays(d, gaps[gi++ % gaps.length]);
+  }
+  const p = patient(pid);
+  if (count > 1 && p && (!p.cure || p.cure.svc !== sv || doneCount(p) >= p.cure.total)) p.cure = { svc: sv, zone: p.cure && p.cure.svc === sv ? p.cure.zone : null, total: count, freq, rx: "gen", cnam: false };
+  return made;
+}
+function apptModal(id) {
+  const a = S.appts.find(x => x.id === id), p = patient(a.patient), sv = svc(a.service), btns = [], sm = sessionMap();
+  if (a.status === "pending") btns.push(`<button class="btn primary" data-act="accept" data-id="${a.id}">${t("accept")}</button>`);
+  if (a.status === "confirmed" || a.status === "pending") btns.push(`<button class="btn ok" data-act="set-st" data-id="${a.id}" data-v="done">${t("arrived")}</button>`, `<button class="btn bad" data-act="set-st" data-id="${a.id}" data-v="noshow">${t("absent")}</button>`, `<button class="btn bad" data-act="set-st" data-id="${a.id}" data-v="cancelled">${t("cancelAppt")}</button>`);
+  modal(`<div style="display:flex;justify-content:space-between;gap:10px;align-items:start"><h2>${t("mAppt")}</h2>${pill(a.status)}</div>
+    <div style="display:flex;gap:12px;align-items:center">${avatar(p.name)}<div><b style="font-size:1.05rem">${esc(p.name)}</b><div class="muted mono" style="font-size:.85rem">+216 ${esc(p.phone)}</div></div></div>
+    <div class="card" style="padding:14px;border-radius:14px;display:grid;gap:6px"><b>${esc(sName(sv))}${a.zone ? " · " + esc(zName(a.zone)) : ""} ${sessTag(a, sm)}</b><span class="muted" style="text-transform:capitalize">${fmtDay(a.date, { weekday: "long", day: "numeric", month: "long" })} · <span class="mono">${a.time}–${toHM(toMin(a.time) + sv.dur)}</span></span>${a.source === "online" ? `<span><span class="src">${t("online")}</span>${a.rx ? ` · ${t("rxLabel")} : ${rxText(a.rx)}` : ""}</span>` : ""}</div>
+    ${btns.length ? `<div class="modal-actions" style="justify-content:flex-start">${btns.join("")}</div>` : ""}
+    <div class="modal-actions"><button class="btn" data-act="open-file" data-v="${p.id}">${t("openFile")}</button><button class="btn" data-act="close">${t("mCancel")}</button></div>`);
+}
+function newPatientModal() {
+  modal(`<h2>${t("newPatient")}</h2>
+    <label class="f" for="nName">${t("name")}<input class="in" id="nName"></label>
+    <div class="fields"><label class="f" for="nPhone">${t("phone")}<input class="in mono" id="nPhone" inputmode="tel"></label><label class="f" for="nBorn">${t("birth")}<input class="in mono" id="nBorn" inputmode="numeric" placeholder="1985"></label></div>
+    <p id="nErr" class="err" hidden></p>
+    <div class="modal-actions"><button class="btn" data-act="close">${t("mCancel")}</button><button class="btn primary" data-act="save-pt">${t("mSave")}</button></div>`);
+}
+const normPhone = s => s.replace(/\D/g, "").replace(/^216/, "");
+const fmtPhone = d => d.slice(0, 2) + " " + d.slice(2, 5) + " " + d.slice(5);
+function findOrCreate(name, digits) {
+  let p = S.patients.find(x => normPhone(x.phone) === digits);
+  if (!p) { p = { id: "p" + (++S.pseq), name, phone: fmtPhone(digits), born: 1990, created: TODAY, notes: "", balance: 0, cure: null }; S.patients.push(p); }
+  return p;
+}
+function showErr(sel, msg) { const e = $(sel); e.textContent = msg; e.hidden = false; }
+
+/* ---------- render ---------- */
+function countUp() {
+  if (reduced) return;
+  document.querySelectorAll("[data-count]").forEach(el => {
+    const end = Number(el.dataset.count); if (!end) return;
+    const t0 = performance.now(), dur = 900;
+    const step = now => { const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(end * e); if (k < 1) requestAnimationFrame(step); };
+    el.textContent = "0"; requestAnimationFrame(step);
+  });
+}
+function chrome() {
+  document.documentElement.lang = lang; document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+  $("#logoMark").innerHTML = icon("pulse", 18, 2.4);
+  $("#brandName").textContent = t("brand"); $("#demoTag").textContent = t("demo");
+  $("#vSite").textContent = t("vSite"); $("#vOffice").textContent = t("vOffice");
+  $("#vSite").setAttribute("aria-pressed", ui.view === "site"); $("#vOffice").setAttribute("aria-pressed", ui.view === "cabinet");
+  $("#lFr").setAttribute("aria-pressed", lang === "fr"); $("#lAr").setAttribute("aria-pressed", lang === "ar");
+  $("#links").innerHTML = ui.view === "site" ? [["soins", "navSoins"], ["douleur", "navPain"], ["cabinet", "navCab"], ["reserver", "navBook"], ["faq", "navFaq"]].map(([id, k]) => `<a href="#${id}" data-act="scroll" data-v="${id}">${t(k)}</a>`).join("") : "";
+}
+function render() {
+  chrome();
+  $("#app").innerHTML = ui.view === "site" ? renderSite() : renderOffice();
+  if (ui.view === "site") { applyPhase(); bindBook(); bindEva(); } else { placeNowLine(); bindOffice(); }
+  if (ui.anim) countUp();
+  ui.anim = false;
+}
+function renderBook() { const c = $("#bookCard"); if (c) { c.innerHTML = bookingHTML(); bindBook(); } }
+function bindBook() {
+  const f = $("#bkForm"); if (!f) return;
+  ["bkName", "bkPhone"].forEach(id => $("#" + id).addEventListener("input", e => { ui.bk[id === "bkName" ? "name" : "phone"] = e.target.value; }));
+  f.addEventListener("submit", e => {
+    e.preventDefault();
+    const name = $("#bkName").value.trim(), ph = normPhone($("#bkPhone").value);
+    if (name.length < 3) return showErr("#bkErr", t("needName"));
+    if (ph.length !== 8) return showErr("#bkErr", t("needPhone"));
+    const p = findOrCreate(name, ph), bk = ui.bk;
+    S.appts.push({ id: "a" + (++S.seq), patient: p.id, service: bk.service, date: bk.date, time: bk.time, status: "pending", source: "online", eva: null, zone: bk.zone, rx: bk.rx, created: TODAY });
+    save(); ui.bk = { service: null, date: null, time: null, rx: null, zone: null, done: { service: bk.service, date: bk.date, time: bk.time, rx: bk.rx, zone: bk.zone } }; renderBook();
+  });
+}
+function bindOffice() {
+  const s = $("#ptSearch");
+  if (s) s.addEventListener("input", () => { ui.q = s.value; const pos = s.selectionStart; render(); const n = $("#ptSearch"); n.focus(); n.setSelectionRange(pos, pos); });
+}
+function go(view, tab) { ui.view = view; if (tab) ui.tab = tab; ui.anim = true; render(); window.scrollTo({ top: 0 }); }
+const scrollToId = id => { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 70, behavior: reduced ? "auto" : "smooth" }); };
+
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-act]"); if (!el) return;
+  const act = el.dataset.act, v = el.dataset.v, id = el.dataset.id;
+  if (act === "close-bg") { if (e.target === el) closeModal(); return; }
+  switch (act) {
+    case "view": go(v === "cabinet" ? "cabinet" : "site"); break;
+    case "lang": lang = v; try { localStorage.setItem(KEY + "-lang", v); } catch {} ui.anim = true; render(); break;
+    case "scroll": e.preventDefault(); scrollToId(v); break;
+    case "zone": setZone(v); break;
+    case "book-bilan": ui.bk = { ...ui.bk, service: "bilan", zone: ui.zone, time: null, done: null }; renderBook(); scrollToId("reserver"); break;
+    case "pick-svc": ui.bk = { ...ui.bk, service: v, time: null, done: null }; renderBook(); scrollToId("reserver"); break;
+    case "bk-svc": ui.bk.service = v; ui.bk.time = null; renderBook(); break;
+    case "bk-day": ui.bk.date = v; ui.bk.time = null; renderBook(); break;
+    case "bk-time": ui.bk.time = v; renderBook(); $("#bkName")?.focus({ preventScroll: true }); break;
+    case "bk-rx": ui.bk.rx = v; renderBook(); break;
+    case "bk-reset": ui.bk = { service: null, date: null, time: null, rx: null, zone: null, done: null }; renderBook(); break;
+    case "go-requests": go("cabinet", "requests"); break;
+    case "guide-x": ui.guide = false; try { localStorage.setItem(KEY + "-guide", "0"); } catch {} el.closest(".guide").remove(); break;
+    case "tab": ui.tab = v; ui.anim = true; render(); window.scrollTo({ top: 0 }); break;
+    case "week": ui.week = v === "0" ? 0 : ui.week + Number(v); render(); break;
+    case "remind": { const tm = ymd(addDays(new Date(), 1)); const n = S.appts.filter(a => a.date === tm && a.status === "confirmed").length; toast(n ? t("reminded", { n }) : t("remindNone")); break; }
+    case "set-st": { const a = S.appts.find(x => x.id === id); a.status = v; save(); closeModal(); render(); toast(v === "cancelled" ? t("cancelled") : t("updated")); break; }
+    case "refuse": { const a = S.appts.find(x => x.id === id); a.status = "cancelled"; save(); render(); toast(t("refused")); break; }
+    case "accept": { const a = S.appts.find(x => x.id === id); a.status = "confirmed"; save(); closeModal(); render(); toast(t("accepted")); break; }
+    case "new-appt": newApptModal(el.dataset.d || bookingDays(1)[0], el.dataset.t); break;
+    case "new-series": newApptModal(bookingDays(1)[0], null, v); break;
+    case "open-appt": apptModal(id); break;
+    case "open-file": closeModal(); ui.sel = v; ui.q = ""; go("cabinet", "patients"); break;
+    case "close": closeModal(); break;
+    case "save-appt": {
+      let pid = $("#mPt").value; const name = $("#mName").value.trim(), ph = normPhone($("#mPhone").value);
+      if (!pid) { if (name.length < 3) return showErr("#mErr", t("needName")); if (ph.length !== 8) return showErr("#mErr", t("needPhone")); pid = findOrCreate(name, ph).id; }
+      const time = $("#mTime").value; if (!time) return showErr("#mErr", t("noSlot"));
+      const count = Number($("#mCount").value), made = scheduleSeries(pid, $("#mSvc").value, $("#mDate").value, time, count, Number($("#mFreq").value));
+      save(); closeModal(); render();
+      toast(made.length > 1 ? t("addedSeries", { n: made.length, d: fmtDay(made[made.length - 1].date, { day: "numeric", month: "long" }) }) : t("added"));
+      break;
+    }
+    case "new-pt": newPatientModal(); break;
+    case "save-pt": {
+      const name = $("#nName").value.trim(), ph = normPhone($("#nPhone").value), born = Number($("#nBorn").value) || 1990;
+      if (name.length < 3) return showErr("#nErr", t("needName")); if (ph.length !== 8) return showErr("#nErr", t("needPhone"));
+      const p = findOrCreate(name, ph); p.born = born; save(); closeModal(); ui.sel = p.id; ui.q = ""; render(); toast(t("pCreated")); break;
+    }
+    case "sel-pt": ui.sel = v; render(); break;
+    case "send-ex": toast(t("exSent")); break;
+    case "save-notes": { const p = patient(v); p.notes = $("#ptNotes").value; save(); toast(t("saved")); break; }
+    case "reset": S = seed(); save(); ui.sel = null; ui.bk = { service: null, date: null, time: null, rx: null, zone: null, done: null }; ui.anim = true; render(); toast(t("resetDone")); break;
+  }
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && $("#layer").innerHTML) closeModal();
+  const z = e.target.closest && e.target.closest(".zone");
+  if (z && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); setZone(z.dataset.v); }
+});
+if (!reduced && !SHOT) setInterval(() => { if (ui.view !== "site" || document.hidden) return; ui.phase = (ui.phase + 1) % 8; applyPhase(); }, 1250);
+render();
+})();
+</script>
+</body>
+</html>
